@@ -1,0 +1,18 @@
+{
+  "name": "labelcroptools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Free browser-based tools for Indian e-commerce sellers (Meesho, Flipkart, Amazon): label croppers, picklists, PDF tools, calculators and generators.",
+  "scripts": {
+    "build": "node build.mjs",
+    "serve": "python3 -m http.server 8787 --directory dist",
+    "dev": "npm run build && npm run serve",
+    "test:labels": "node scripts/make-test-labels.cjs",
+    "logos": "python3 scripts/prep-logos.py",
+    "audit": "node scripts/audit.mjs",
+    "contrast": "node scripts/contrast.mjs",
+    "check": "npm run build && npm run audit && npm run contrast && npm run check:posts",
+    "check:posts": "node scripts/check-posts.mjs"
+  }
+}
