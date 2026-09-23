@@ -115,12 +115,24 @@ const howToLd = (t) => ({
 
 // ── analytics / consent ──────────────────────────────────────────────────
 const needsConsent = consentRequiredFor.includes(analytics.provider);
-// Origins the page is allowed to pull scripts from, for the CSP.
-const analyticsOrigin = () => {
-  const u = { plausible: analytics.scriptUrl || 'https://plausible.io', umami: analytics.scriptUrl || '',
-    cloudflare: 'https://static.cloudflareinsights.com', ga4: 'https://www.googletagmanager.com' }[analytics.provider];
-  try { return u ? new URL(u).origin : ''; } catch { return ''; }
+// Origins the page may load a script from, and the origin that script then beacons to.
+// These are different hosts for most providers, so they need separate CSP entries —
+// allowing only the script host leaves the beacon itself blocked by connect-src.
+const ANALYTICS_ORIGINS = {
+  plausible: { script: analytics.scriptUrl || 'https://plausible.io', connect: analytics.scriptUrl || 'https://plausible.io' },
+  umami: { script: analytics.scriptUrl, connect: analytics.scriptUrl },
+  cloudflare: { script: 'https://static.cloudflareinsights.com', connect: 'https://cloudflareinsights.com' },
+  // Measured on the live site: the injected beacon POSTs to /cdn-cgi/rum on our own
+  // origin (204), which 'self' already covers, so this connect entry is a fallback for
+  // the case where Cloudflare reverts to a third-party endpoint. Kept rather than
+  // trimmed because script-src already trusts this vendor's code, so the entry grants
+  // nothing that code could not do anyway, and dropping it would break collection
+  // silently if the endpoint moves.
+  'cloudflare-edge': { script: 'https://static.cloudflareinsights.com', connect: 'https://cloudflareinsights.com' },
+  ga4: { script: 'https://www.googletagmanager.com', connect: 'https://www.google-analytics.com' },
 };
+const originOf = (u) => { try { return u ? new URL(u).origin : ''; } catch { return ''; } };
+const analyticsOrigin = (kind = 'script') => originOf((ANALYTICS_ORIGINS[analytics.provider] || {})[kind]);
 // Tag markup. Cookie-less providers load immediately; a consent-gated one is parked in
 // a type="text/plain" block that core.js activates only after the visitor accepts.
 const analyticsTag = () => {
@@ -129,6 +141,7 @@ const analyticsTag = () => {
     return `<script defer data-domain="${esc(analytics.domain)}" src="${esc(analytics.scriptUrl || 'https://plausible.io/js/script.js')}"></script>`;
   if (p === 'umami' && analytics.websiteId && analytics.scriptUrl)
     return `<script defer data-website-id="${esc(analytics.websiteId)}" src="${esc(analytics.scriptUrl)}"></script>`;
+  if (p === 'cloudflare-edge') return ''; // injected by Cloudflare's proxy, not by us
   if (p === 'cloudflare' && analytics.websiteId)
     return `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${esc(analytics.websiteId)}"}'></script>`;
   if (p === 'ga4' && analytics.measurementId)
@@ -142,6 +155,7 @@ const analyticsPrivacyCopy = () => {
   const p = analytics.provider;
   if (p === 'none') return '<p>We currently run no analytics at all. No page-view data is collected.</p>';
   if (p === 'ga4') return `<p>We use Google Analytics 4 to count visits. It sets cookies, so it only loads after you press Accept on the cookie banner — decline and no tag is loaded at all. IP anonymisation is enabled. File contents and tool inputs are never sent.</p>`;
+  if (p === 'cloudflare-edge') return '<p>We use Cloudflare Web Analytics to count page views. Cloudflare adds it at the CDN that serves this site, so it is not part of the page source. It is cookie-less, stores nothing on your device and does not build a profile of you. File contents and tool inputs are never sent.</p>';
   const names = { plausible: 'Plausible', umami: 'Umami', cloudflare: 'Cloudflare Web Analytics' };
   return `<p>We use ${names[p] || p} to count page views. It is cookie-less, stores nothing on your device and does not build a profile of you. File contents and tool inputs are never sent.</p>`;
 };
@@ -175,11 +189,11 @@ const siteScript = `<script>${siteCode}</script>`;
 // and _headers carries the full policy.
 const cspDirectives = [
   "default-src 'self'",
-  `script-src 'self' ${sha(themeCode)} ${sha(siteCode)} ${analyticsOrigin()}`.trim(),
+  `script-src 'self' ${sha(themeCode)} ${sha(siteCode)} ${analyticsOrigin('script')}`.trim(),
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  `connect-src 'self' blob: ${analyticsOrigin()}`.trim(),
+  `connect-src 'self' blob: ${analyticsOrigin('connect')}`.trim(),
   "worker-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",

@@ -22,11 +22,21 @@ export const site = {
 };
 
 // ─── Analytics ────────────────────────────────────────────────────────────
-// provider: 'none' | 'plausible' | 'umami' | 'cloudflare' | 'ga4'
-// The first three are cookie-less and need no consent banner. 'ga4' writes cookies,
-// so the banner appears automatically and the tag only loads after an explicit Accept.
+// provider: 'none' | 'plausible' | 'umami' | 'cloudflare' | 'cloudflare-edge' | 'ga4'
+// All but 'ga4' are cookie-less and need no consent banner. 'ga4' writes cookies, so the
+// banner appears automatically and the tag only loads after an explicit Accept.
+//
+// 'cloudflare-edge' is Cloudflare Web Analytics with automatic setup: the beacon is
+// injected by Cloudflare's proxy on the way out, so this build emits no tag of its own
+// (emitting one too would load the beacon twice and double-count every view). The CSP
+// still has to allow it, which is the whole reason this mode exists — without it the
+// browser blocks the injected script on every page view.
+//
+// It is switched on in the Cloudflare dashboard, not here. Setting this back to 'none'
+// while the dashboard toggle is still on will make the privacy page inaccurate AND
+// re-break the beacon, so change both together.
 export const analytics = {
-  provider: 'none',
+  provider: 'cloudflare-edge',
   domain: '',          // plausible: the site domain you registered
   scriptUrl: '',       // plausible / umami: self-hosted script URL (optional)
   websiteId: '',       // umami website id, or Cloudflare Web Analytics token

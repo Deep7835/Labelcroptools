@@ -204,7 +204,9 @@ add an inline script, rebuild so its hash is picked up, or it will be blocked.
 - JSON-LD: Organization, WebSite (SearchAction), SoftwareApplication, HowTo, FAQPage, BreadcrumbList, ItemList
 - `sitemap.xml`, `robots.txt`, `manifest.webmanifest`, service worker (offline shell), `_headers` (security + immutable caching for hashed assets)
 - Category hub pages, related-tool links, footer links to every tool, one `<h1>` per page, semantic sections
-- Self-hosted fonts (preloaded), no third-party requests, no cookies
+- Self-hosted fonts (preloaded), no cookies. The one third-party request is the cookie-less
+  Cloudflare Web Analytics beacon, injected at the CDN rather than by this build — see
+  `analytics.provider: 'cloudflare-edge'` in `src/site.config.mjs`
 
 ## Deploy
 
