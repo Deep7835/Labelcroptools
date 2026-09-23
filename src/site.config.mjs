@@ -19,6 +19,8 @@ export const site = {
   whatsapp: '', // e.g. '919999999999' → adds a WhatsApp support link when set
   foundingYear: 2026,
   updated: '2026-09-23',
+  // Public by design: Google serves this token for you to publish. Not a secret.
+  googleSiteVerification: '0T2yBm7gkq2AgVANM2Zgf86eXc-gryrgYyfaAGoxNYY',
 };
 
 // ─── Analytics ────────────────────────────────────────────────────────────
@@ -36,15 +38,21 @@ export const site = {
 // while the dashboard toggle is still on will make the privacy page inaccurate AND
 // re-break the beacon, so change both together.
 export const analytics = {
-  provider: 'cloudflare-edge',
+  provider: 'ga4',
   domain: '',          // plausible: the site domain you registered
   scriptUrl: '',       // plausible / umami: self-hosted script URL (optional)
   websiteId: '',       // umami website id, or Cloudflare Web Analytics token
-  measurementId: '',   // ga4: G-XXXXXXXXXX
+  measurementId: 'G-SVFL2Y1D83',   // ga4: G-XXXXXXXXXX
 };
 
 // Providers that store or read anything on the visitor's device.
 export const consentRequiredFor = ['ga4'];
+
+// Analytics injected by Cloudflare's proxy rather than emitted by this build. It is
+// independent of `provider` above: Web Analytics is switched on at the zone, so the
+// beacon arrives whatever we configure here, and the CSP has to allow it or the browser
+// blocks it on every page view. Set to '' if you turn Web Analytics off in the dashboard.
+export const edgeAnalytics = 'cloudflare-edge';
 
 // ─── Marketplace logos shown in the rotating hero slot ────────────────────
 // Order = rotation order. A brand gets an image when logos/<slug>.(png|webp|jpg)

@@ -17,7 +17,12 @@ import amazonImages from './amazon-product-images.mjs';
 import amazonFulfilment from './amazon-fba-vs-easy-ship.mjs';
 import amazonReturns from './amazon-reduce-returns-claims.mjs';
 
+import toolsFourUp from './print-4-labels-one-a4-sheet.mjs';
+import toolsImageSize from './product-image-file-too-large.mjs';
+import toolsGstPrice from './gst-inclusive-vs-exclusive.mjs';
+
 export const posts = [
+  toolsFourUp, toolsImageSize, toolsGstPrice,
   meeshoLabels, meeshoRto, meeshoPayments, meeshoImages, meeshoPacking,
   flipkartPrinting, flipkartSku, flipkartWeight, flipkartImages, flipkartDispatch,
   amazonLabels, amazonFees, amazonImages, amazonFulfilment, amazonReturns,

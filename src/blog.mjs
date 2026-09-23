@@ -28,4 +28,10 @@ export const marketplaces = [
     description: 'Amazon.in seller guides from real dispatch work: printing Easy Ship labels at true 4x6, working out referral and closing fees, meeting image rules and reducing returns.',
     intro: 'Amazon.in is strict about formats, and that strictness is actually good news: once you match the spec exactly, most daily problems disappear. These guides show you the exact specs.',
   },
+  {
+    slug: 'tools', name: 'Tools', short: 'Tools',
+    title: 'Seller Tool Guides — Labels, PDFs, Images, GST & Barcodes',
+    description: 'Practical guides for the jobs the tools do: printing several labels per sheet, shrinking product photos to upload, GST pricing, barcodes and PDF handling.',
+    intro: 'These guides sit behind the tools themselves. Each one takes a single job (fitting four labels on a sheet, getting a photo under an upload limit, quoting a price correctly) and walks through the reasoning, not just the clicks.',
+  },
 ];

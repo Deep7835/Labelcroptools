@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { site, categories, brands, brandRotateMs, analytics, consentRequiredFor } from './src/site.config.mjs';
+import { site, categories, brands, brandRotateMs, analytics, consentRequiredFor, edgeAnalytics } from './src/site.config.mjs';
 import { tools } from './src/tools.mjs';
 import { sprite, icon } from './src/icons.mjs';
 import { blog, marketplaces } from './src/blog.mjs';
@@ -119,20 +119,37 @@ const needsConsent = consentRequiredFor.includes(analytics.provider);
 // These are different hosts for most providers, so they need separate CSP entries —
 // allowing only the script host leaves the beacon itself blocked by connect-src.
 const ANALYTICS_ORIGINS = {
-  plausible: { script: analytics.scriptUrl || 'https://plausible.io', connect: analytics.scriptUrl || 'https://plausible.io' },
-  umami: { script: analytics.scriptUrl, connect: analytics.scriptUrl },
-  cloudflare: { script: 'https://static.cloudflareinsights.com', connect: 'https://cloudflareinsights.com' },
-  // Measured on the live site: the injected beacon POSTs to /cdn-cgi/rum on our own
-  // origin (204), which 'self' already covers, so this connect entry is a fallback for
-  // the case where Cloudflare reverts to a third-party endpoint. Kept rather than
-  // trimmed because script-src already trusts this vendor's code, so the entry grants
-  // nothing that code could not do anyway, and dropping it would break collection
-  // silently if the endpoint moves.
-  'cloudflare-edge': { script: 'https://static.cloudflareinsights.com', connect: 'https://cloudflareinsights.com' },
-  ga4: { script: 'https://www.googletagmanager.com', connect: 'https://www.google-analytics.com' },
+  plausible: { script: ['https://plausible.io'], connect: ['https://plausible.io'] },
+  umami: { script: [analytics.scriptUrl], connect: [analytics.scriptUrl] },
+  cloudflare: { script: ['https://static.cloudflareinsights.com'], connect: ['https://cloudflareinsights.com'] },
+  // Measured live: the injected beacon POSTs to /cdn-cgi/rum on our own origin, which
+  // 'self' already covers. The third-party entry is a fallback if that endpoint moves.
+  'cloudflare-edge': { script: ['https://static.cloudflareinsights.com'], connect: ['https://cloudflareinsights.com'] },
+  // gtag loads from googletagmanager, then beacons to google-analytics. GA4 picks a
+  // regional endpoint (region1.google-analytics.com and friends), so the wildcard is
+  // required or collection fails in some countries while working fine in others.
+  ga4: {
+    script: ['https://www.googletagmanager.com'],
+    connect: ['https://www.google-analytics.com', 'https://*.google-analytics.com', 'https://www.googletagmanager.com'],
+    img: ['https://www.google-analytics.com'],
+  },
 };
-const originOf = (u) => { try { return u ? new URL(u).origin : ''; } catch { return ''; } };
-const analyticsOrigin = (kind = 'script') => originOf((ANALYTICS_ORIGINS[analytics.provider] || {})[kind]);
+// A bare origin passes straight through, including a wildcard host, which CSP accepts
+// but URL() cannot parse. Anything else is a user-supplied script URL, so parse it and
+// keep only the origin.
+const originOf = (u) => {
+  if (!u) return '';
+  if (/^https:\/\/[*A-Za-z0-9.-]+$/.test(u)) return u;
+  try { return new URL(u).origin; } catch { return ''; }
+};
+
+// Cloudflare Web Analytics is switched on at the zone with automatic setup, so its beacon
+// is injected by the proxy no matter what `provider` says. It is therefore listed
+// separately: the build emits no tag for it, but the policy still has to permit it.
+const activeAnalytics = [analytics.provider, edgeAnalytics].filter(Boolean);
+const analyticsOrigin = (kind = 'script') => [...new Set(
+  activeAnalytics.flatMap((p) => (ANALYTICS_ORIGINS[p] || {})[kind] || []).map(originOf).filter(Boolean),
+)].join(' ');
 // Tag markup. Cookie-less providers load immediately; a consent-gated one is parked in
 // a type="text/plain" block that core.js activates only after the visitor accepts.
 const analyticsTag = () => {
@@ -146,15 +163,21 @@ const analyticsTag = () => {
     return `<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token":"${esc(analytics.websiteId)}"}'></script>`;
   if (p === 'ga4' && analytics.measurementId)
     return `<script type="text/plain" data-consent-src="https://www.googletagmanager.com/gtag/js?id=${esc(analytics.measurementId)}"></script>
-<script type="text/plain" data-consent-inline>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${esc(analytics.measurementId)}',{anonymize_ip:true});</script>`;
+<script type="text/plain" data-consent-inline>${ga4InlineCode}</script>`;
   return '';
 };
 // Privacy copy is generated from the configured provider so the page can never
 // claim something the build does not actually do.
+// Cloudflare's beacon runs alongside whatever provider is configured, so the privacy
+// page has to mention it too. Describing only `provider` would make the page incomplete
+// rather than merely terse.
+const edgeAnalyticsCopy = () => edgeAnalytics
+  ? '<p>Separately, Cloudflare Web Analytics runs on the CDN that serves this site. It is cookie-less, stores nothing on your device and does not build a profile of you, so it runs without a banner.</p>'
+  : '';
 const analyticsPrivacyCopy = () => {
   const p = analytics.provider;
   if (p === 'none') return '<p>We currently run no analytics at all. No page-view data is collected.</p>';
-  if (p === 'ga4') return `<p>We use Google Analytics 4 to count visits. It sets cookies, so it only loads after you press Accept on the cookie banner — decline and no tag is loaded at all. IP anonymisation is enabled. File contents and tool inputs are never sent.</p>`;
+  if (p === 'ga4') return `<p>We use Google Analytics 4 to count visits. It sets cookies, so it only loads after you press Accept on the cookie banner. Decline and no tag is loaded at all. IP anonymisation is enabled. File contents and tool inputs are never sent.</p>${edgeAnalyticsCopy()}`;
   if (p === 'cloudflare-edge') return '<p>We use Cloudflare Web Analytics to count page views. Cloudflare adds it at the CDN that serves this site, so it is not part of the page source. It is cookie-less, stores nothing on your device and does not build a profile of you. File contents and tool inputs are never sent.</p>';
   const names = { plausible: 'Plausible', umami: 'Umami', cloudflare: 'Cloudflare Web Analytics' };
   return `<p>We use ${names[p] || p} to count page views. It is cookie-less, stores nothing on your device and does not build a profile of you. File contents and tool inputs are never sent.</p>`;
@@ -181,6 +204,10 @@ const consentFooterLink = () => needsConsent ? '<button class="linklike" id="con
 
 // Inline scripts are hashed into the CSP so the policy never needs 'unsafe-inline'.
 const sha = (code) => "'sha256-" + crypto.createHash('sha256').update(code, 'utf8').digest('base64') + "'";
+// core.js re-creates this as a real inline <script> when the visitor accepts, so its
+// hash has to be in the policy. A dynamically inserted inline script is still checked
+// against script-src, and this CSP carries no 'unsafe-inline' to fall back on.
+const ga4InlineCode = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${analytics.measurementId}',{anonymize_ip:true});`;
 const themeCode = `(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}})()`;
 const siteCode = `window.__SITE={name:${JSON.stringify(site.name)},build:${JSON.stringify(BUILD_ID)},consent:${needsConsent}};`;
 const themeScript = `<script>${themeCode}</script>`;
@@ -189,9 +216,9 @@ const siteScript = `<script>${siteCode}</script>`;
 // and _headers carries the full policy.
 const cspDirectives = [
   "default-src 'self'",
-  `script-src 'self' ${sha(themeCode)} ${sha(siteCode)} ${analyticsOrigin('script')}`.trim(),
+  `script-src 'self' ${sha(themeCode)} ${sha(siteCode)} ${needsConsent && analytics.measurementId ? sha(ga4InlineCode) : ''} ${analyticsOrigin('script')}`.replace(/\s+/g, ' ').trim(),
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob:",
+  `img-src 'self' data: blob: ${analyticsOrigin('img')}`.trim(),
   "font-src 'self'",
   `connect-src 'self' blob: ${analyticsOrigin('connect')}`.trim(),
   "worker-src 'self' blob:",
@@ -212,7 +239,7 @@ const head = ({ title, description, url, ogImage, extraLd = [], noindex = false,
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<meta name="robots" content="${noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'}">
+${site.googleSiteVerification ? `<meta name="google-site-verification" content="${esc(site.googleSiteVerification)}">\n` : ''}<meta name="robots" content="${noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'}">
 <link rel="canonical" href="${abs(url)}">
 <link rel="alternate" hreflang="en-IN" href="${abs(url)}">
 <link rel="alternate" hreflang="en" href="${abs(url)}">
