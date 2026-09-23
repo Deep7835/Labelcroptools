@@ -10,7 +10,7 @@ export default {
   excerpt: 'Almost every rejected upload comes down to one of three things. None of them require new photos, and the fix usually takes under a minute.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'photo',
+  cover: 'compress',
   coverAlt: 'Diagram showing a large photo file shrinking to fit inside a marketplace upload size limit',
   tools: ['image-compressor', 'product-image-resizer'],
   faq: [

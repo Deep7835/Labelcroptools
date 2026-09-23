@@ -10,7 +10,7 @@ export default {
   excerpt: 'Four labels per A4 cuts your paper use by 75 percent. There is one sizing detail that trips people up, and it takes about ten seconds to get right.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'label-4x6',
+  cover: 'nup-grid',
   coverAlt: 'Diagram of an A4 sheet divided into four equal shipping label panels with cut lines between them',
   tools: ['pages-per-sheet', 'shipping-label-cropper', 'pdf-crop'],
   faq: [

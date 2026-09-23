@@ -10,7 +10,7 @@ export default {
   excerpt: 'A UPI QR is just a short line of text drawn as squares. Knowing what is inside it tells you exactly what to check before you print a hundred copies.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'barcode',
+  cover: 'qr',
   coverAlt: 'Diagram showing payment details being encoded into a QR code for a shop counter',
   tools: ['qr-code-generator', 'thank-you-card-maker', 'barcode-generator'],
   faq: [

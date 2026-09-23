@@ -10,7 +10,7 @@ export default {
   excerpt: 'I cannot point you to a study proving these work, and anyone who does is probably selling you cards. Here is the honest reasoning instead.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'funnel',
+  cover: 'card-insert',
   coverAlt: 'Diagram of a printed note placed inside a parcel alongside the packed product',
   tools: ['thank-you-card-maker', 'qr-code-generator', 'product-image-resizer'],
   faq: [

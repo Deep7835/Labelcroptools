@@ -10,8 +10,8 @@ export default {
   excerpt: 'Seven habits, ordered by how much they actually give back. The first one halves your paper on day one. The last one prevents the expensive kind of mistake.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'checklist',
-  coverAlt: 'Diagram of a seven step label printing routine from cropping through to checking the printed stack',
+  cover: 'tips',
+  coverAlt: 'Diagram of a stepped label printing routine, each step narrower than the one above it',
   tools: ['shipping-label-cropper', 'pages-per-sheet', 'picklist-generator'],
   faq: [
     { q: 'What is the single best label printing tip for online sellers?', a: 'Crop the label out of the page before printing. Marketplace PDFs put an invoice under every label, so cropping first is what makes every later saving possible.' },

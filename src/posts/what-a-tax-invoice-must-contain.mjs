@@ -10,7 +10,7 @@ export default {
   excerpt: 'An invoice is not a receipt. It is the document your buyer uses to claim input credit, which is why the required fields are not optional decoration.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'statement',
+  cover: 'invoice-fields',
   coverAlt: 'Diagram of a tax invoice with its required fields highlighted in sequence',
   tools: ['gst-invoice-generator', 'gst-calculator', 'profit-calculator'],
   faq: [

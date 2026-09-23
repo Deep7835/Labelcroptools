@@ -10,7 +10,7 @@ export default {
   excerpt: 'Splitting copies pages into new documents rather than re-rendering them, which is why a split file is pixel for pixel identical to the original.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'flow',
+  cover: 'split-docs',
   coverAlt: 'Diagram of one large PDF document separating into several smaller documents',
   tools: ['split-pdf', 'merge-pdf', 'pdf-crop'],
   faq: [

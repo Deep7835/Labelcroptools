@@ -10,7 +10,7 @@ export default {
   excerpt: 'Both ways of quoting a price are perfectly correct. Mixing them up on a single order is what quietly costs you the tax amount out of your own margin.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'statement',
+  cover: 'tax-split',
   coverAlt: 'Diagram comparing a price with GST added on top against a price with GST already contained inside it',
   tools: ['gst-calculator', 'gst-invoice-generator', 'profit-calculator'],
   faq: [

@@ -10,7 +10,7 @@ export default {
   excerpt: 'Cropping a PDF does not delete anything. It changes which part of the page a reader is told to show, which is why it stays perfectly sharp.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'frame',
+  cover: 'margins',
   coverAlt: 'Diagram of a PDF page with wide empty borders being trimmed inward to the printed content',
   tools: ['pdf-crop', 'pages-per-sheet', 'merge-pdf'],
   faq: [

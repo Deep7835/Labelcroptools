@@ -10,7 +10,7 @@ export default {
   excerpt: 'A label that comes out at half size has usually been scaled twice, once by the tool and once by the printer driver. The fix is to let only one of them do it.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'label-4x6',
+  cover: 'scale-small',
   coverAlt: 'Diagram comparing a correctly sized shipping label with the same label shrunk by page fitting',
   tools: ['amazon-label-cropper', 'pdf-crop', 'pages-per-sheet'],
   faq: [

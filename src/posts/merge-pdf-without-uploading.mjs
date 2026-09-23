@@ -10,7 +10,7 @@ export default {
   excerpt: 'Most free merge sites send your file to a server first. Your browser has been able to do the whole job locally for years, and you can verify it in one click.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'flow',
+  cover: 'local-merge',
   coverAlt: 'Diagram showing several PDF documents combining into one file inside a browser window rather than on a server',
   tools: ['merge-pdf', 'split-pdf', 'pdf-crop'],
   faq: [

@@ -10,8 +10,8 @@ export default {
   excerpt: 'Both formats are excellent, for opposite reasons. JPG suits pages that are mostly photographs. PNG suits pages that are mostly text and flat colour.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'compare',
-  coverAlt: 'Diagram comparing a PDF page exported as a photographic image against the same page exported as a flat graphic',
+  cover: 'raster',
+  coverAlt: 'Diagram of a sharp PDF page being converted into a grid of coloured pixels',
   tools: ['pdf-to-images', 'image-compressor', 'images-to-pdf'],
   faq: [
     { q: 'Should I export PDF pages as JPG or PNG?', a: 'PNG for pages that are mostly text, line art or flat colour, because it stays crisp. JPG for pages that are mostly photographs, because it produces a much smaller file with no visible loss.' },

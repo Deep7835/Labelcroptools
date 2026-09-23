@@ -10,7 +10,7 @@ export default {
   excerpt: 'Two things go wrong with photo PDFs: pages land sideways, and the file is too big to send. Both have the same cause and both are easy to avoid.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'photo',
+  cover: 'photo-stack',
   coverAlt: 'Diagram showing several phone photographs being stacked into a single PDF document',
   tools: ['images-to-pdf', 'image-compressor', 'pdf-crop'],
   faq: [

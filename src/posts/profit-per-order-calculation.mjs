@@ -10,7 +10,7 @@ export default {
   excerpt: 'Selling price minus cost price minus commission is where most people stop. Three more lines decide whether the number is real.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'chart',
+  cover: 'waterfall',
   coverAlt: 'Diagram breaking an order value down into product cost, fees, shipping, returns and remaining profit',
   tools: ['profit-calculator', 'gst-calculator', 'volumetric-weight-calculator'],
   faq: [

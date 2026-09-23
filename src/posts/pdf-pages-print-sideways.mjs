@@ -10,7 +10,7 @@ export default {
   excerpt: 'Rotating a page on screen often changes only your view. The file still says portrait, and the printer believes the file. That is the whole problem.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'frame',
+  cover: 'rotate',
   coverAlt: 'Diagram showing a page turned on screen but still stored upright in the file, printing in the wrong orientation',
   tools: ['rotate-pdf', 'pdf-crop', 'pages-per-sheet'],
   faq: [

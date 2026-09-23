@@ -10,7 +10,7 @@ export default {
   excerpt: 'Both are excellent, for completely different jobs. One is yours to use freely today. The other has to be allocated to you before it means anything.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'barcode',
+  cover: 'code-types',
   coverAlt: 'Diagram comparing an internal stock barcode with a retail product barcode side by side',
   tools: ['barcode-generator', 'picklist-generator', 'qr-code-generator'],
   faq: [

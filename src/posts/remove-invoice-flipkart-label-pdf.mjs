@@ -10,7 +10,7 @@ export default {
   excerpt: 'The invoice below the label is why every order eats a full sheet. Cropping it off is easy. Deciding what to do with the invoice afterwards matters more.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'label-crop',
+  cover: 'invoice-split',
   coverAlt: 'Diagram of a Flipkart label page with the shipping label kept and the invoice section below it trimmed away',
   tools: ['flipkart-label-cropper', 'pages-per-sheet', 'split-pdf'],
   faq: [

@@ -10,7 +10,7 @@ export default {
   excerpt: 'Pure white is a number, not a mood. Once you know which number marketplaces check for, getting there with a window and a sheet of paper is straightforward.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'whitebox',
+  cover: 'sweep',
   coverAlt: 'Diagram of a product photographed against a curved white sheet lit from a window',
   tools: ['product-image-resizer', 'image-compressor', 'images-to-pdf'],
   faq: [

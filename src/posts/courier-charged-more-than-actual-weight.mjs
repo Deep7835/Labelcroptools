@@ -10,7 +10,7 @@ export default {
   excerpt: 'Your scale said 800 grams and the bill said 3 kg. Nobody made an error. Couriers bill on space as well as mass, and the box decided the number.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'box',
+  cover: 'weigh',
   coverAlt: 'Diagram comparing a light item on a scale with the larger box it ships in deciding the billed weight',
   tools: ['volumetric-weight-calculator', 'profit-calculator'],
   faq: [

@@ -10,8 +10,8 @@ export default {
   excerpt: 'Wrong-item returns rarely come from carelessness. They come from a process that asks people to hold too much in their head at once.',
   published: '2026-09-23',
   updated: '2026-09-23',
-  cover: 'return',
-  coverAlt: 'Diagram tracing a wrong item picked at the shelf through to a returned parcel',
+  cover: 'mismatch',
+  coverAlt: 'Diagram of a grid of identical product tiles with one marked as the wrong pick',
   tools: ['picklist-generator', 'shipping-label-cropper', 'barcode-generator'],
   faq: [
     { q: 'What causes most wrong-item returns?', a: 'Variant confusion. The right product in the wrong size or colour, picked in a hurry from a shelf where variants sit next to each other and look nearly identical.' },
