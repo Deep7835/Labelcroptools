@@ -9,6 +9,7 @@
     "serve": "python3 -m http.server 8787 --directory dist",
     "dev": "npm run build && npm run serve",
     "deploy": "npm run check && wrangler deploy",
+    "deploy:www": "wrangler deploy --config workers/www-redirect/wrangler.jsonc",
     "test:labels": "node scripts/make-test-labels.cjs",
     "logos": "python3 scripts/prep-logos.py",
     "audit": "node scripts/audit.mjs",

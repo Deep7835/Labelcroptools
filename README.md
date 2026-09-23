@@ -230,6 +230,22 @@ edge, so no Worker invocations are billed. Three settings are deliberate:
 line — this site uses 6 rules and a 409-char maximum). `dist/.assetsignore` keeps the build-time
 `og-manifest.json` and `cover-manifest.json` out of the upload.
 
+### www redirect
+
+`www.labelcroptools.com` is served by a second, separate Worker in `workers/www-redirect/`
+that 301s to the apex. Deploy it with `npm run deploy:www`; it changes rarely and is not
+part of `npm run deploy`.
+
+It is separate for a reason. The site Worker is assets-only, and Cloudflare serves a
+matching static asset *without* invoking Worker code, so redirect logic placed there would
+never run for a normal page request — and `run_worker_first` would bill an invocation for
+every hit on the real site. The `_redirects` file cannot do it either: Cloudflare documents
+domain-level redirects as unsupported there, because its rules match paths, not hostnames.
+
+A zero-Worker alternative is a Cloudflare Redirect Rule in the dashboard (Rules → Redirect
+Rules), which handles it at the edge with no invocations at all. That needs zone-edit
+permission, which the deploy token does not have.
+
 `dist/` is not committed. Deploys upload the locally built output, so the machine that deploys
 needs Python 3 with Pillow for the OG images and blog cover art. To build from CI instead, the
 build command is `pip install Pillow && npm run build` with output directory `dist`.
