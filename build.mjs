@@ -270,6 +270,33 @@ ${sprite}
   <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" hidden>${navTools()}</nav>
 </header>`;
 
+// Footer tool columns: exactly four links each, so the grid reads as clean rows
+// instead of the 7-2 ragged columns the raw category counts produce (PDF Tools has
+// seven tools, Image Tools has two). Each heading links to its hub, which carries
+// the tools that do not fit here; nothing becomes unreachable.
+const FOOTER_COLS = [
+  { title: 'Shipping labels',  href: '/label-tools/', slugs: ['meesho-label-cropper', 'flipkart-label-cropper', 'amazon-label-cropper', 'shipping-label-cropper'] },
+  { title: 'PDF tools',        href: '/pdf-tools/',   slugs: ['pdf-crop', 'pages-per-sheet', 'merge-pdf', 'split-pdf'] },
+  { title: 'Calculators & GST', href: '/calculators/', slugs: ['profit-calculator', 'gst-calculator', 'volumetric-weight-calculator', 'gst-invoice-generator'] },
+  { title: 'Generators & images', href: '/generators/', slugs: ['barcode-generator', 'qr-code-generator', 'product-image-resizer', 'image-compressor'] },
+];
+
+// Fail the build rather than ship a lopsided footer or a dead link.
+for (const col of FOOTER_COLS) {
+  if (col.slugs.length !== 4) throw new Error(`Footer column "${col.title}" has ${col.slugs.length} links, expected 4`);
+  for (const slug of col.slugs) if (!tools.some((t) => t.slug === slug)) throw new Error(`Footer column "${col.title}" links to unknown tool "${slug}"`);
+}
+if (!categories.every((c) => FOOTER_COLS.some((col) => col.href === `/${c.slug}/`) || c.slug === 'image-tools'))
+  throw new Error('A category hub lost its footer link');
+
+// Footer-only short labels. The full name is right everywhere else, but at footer
+// column width this one wraps to two lines and breaks the four-row rhythm.
+const FOOTER_LABEL = { 'volumetric-weight-calculator': 'Volumetric Weight' };
+
+const footerCol = ({ title, href, slugs }) => `<div class="footer-col"><h3><a href="${href}">${esc(title)}</a></h3><ul>${slugs
+  .map((slug) => tools.find((t) => t.slug === slug))
+  .map((t) => `<li><a href="/${t.slug}/">${esc(FOOTER_LABEL[t.slug] || t.name)}</a></li>`).join('')}</ul></div>`;
+
 const footer = () => `
 <footer class="site-footer">
   <div class="barcode-strip" aria-hidden="true"></div>
@@ -278,8 +305,9 @@ const footer = () => `
       <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" rx="7" fill="var(--accent)" stroke="var(--ink)" stroke-width="2"/><path d="M9 11h14M9 16h14M9 21h8" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></svg></span><span class="brand-name">${esc(site.name)}</span></a>
       <p>${esc(site.tagline)}. Every tool runs in your browser — your PDFs, photos and order data never leave your device.</p>
       <p class="muted">Made in India 🇮🇳 for sellers on Meesho, Flipkart, Amazon and beyond. Not affiliated with any marketplace.</p>
+      <a class="footer-all" href="/#tools">Browse all ${tools.length} tools ${icon('arrow', 'ic ic-sm')}</a>
     </div>
-    ${categories.map((c) => `<div class="footer-col"><h3><a href="/${c.slug}/">${c.name}</a></h3><ul>${toolsIn(c.slug).map((t) => `<li><a href="/${t.slug}/">${t.name}</a></li>`).join('')}</ul></div>`).join('')}
+    ${FOOTER_COLS.map(footerCol).join('')}
     <div class="footer-col"><h3><a href="${blog.base}/">Seller guides</a></h3><ul>${marketplaces.map((m) => `<li><a href="${blog.base}/${m.slug}/">${m.name} guides</a></li>`).join('')}<li><a href="${blog.base}/rss.xml">RSS feed</a></li></ul></div>
   </div>
   <div class="wrap footer-bottom">
