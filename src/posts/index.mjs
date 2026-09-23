@@ -21,7 +21,27 @@ import toolsFourUp from './print-4-labels-one-a4-sheet.mjs';
 import toolsImageSize from './product-image-file-too-large.mjs';
 import toolsGstPrice from './gst-inclusive-vs-exclusive.mjs';
 
+import toolsMeeshoSort from './sort-meesho-labels-by-sku.mjs';
+import toolsFlipkartInvoice from './remove-invoice-flipkart-label-pdf.mjs';
+import toolsAmazonSmall from './amazon-label-printing-too-small.mjs';
+import toolsMargins from './remove-white-margins-pdf.mjs';
+import toolsMergeLocal from './merge-pdf-without-uploading.mjs';
+import toolsSplit from './split-large-pdf-separate-files.mjs';
+import toolsSideways from './pdf-pages-print-sideways.mjs';
+import toolsPhotosPdf from './turn-phone-photos-into-one-pdf.mjs';
+import toolsExportImages from './export-pdf-pages-as-images.mjs';
+import toolsPrintTips from './label-printing-tips-online-sellers.mjs';
+import toolsPickPack from './pick-and-pack-mistakes.mjs';
+import toolsProfit from './profit-per-order-calculation.mjs';
+import toolsVolumetric from './courier-charged-more-than-actual-weight.mjs';
+import toolsBarcode from './which-barcode-type-for-products.mjs';
+import toolsUpiQr from './create-upi-qr-code-for-payments.mjs';
+import toolsThankYou from './thank-you-cards-online-orders.mjs';
+import toolsTaxInvoice from './what-a-tax-invoice-must-contain.mjs';
+import toolsWhiteBg from './white-background-product-photos.mjs';
+
 export const posts = [
+  toolsMeeshoSort, toolsFlipkartInvoice, toolsAmazonSmall, toolsMargins, toolsMergeLocal, toolsSplit, toolsSideways, toolsPhotosPdf, toolsExportImages, toolsPrintTips, toolsPickPack, toolsProfit, toolsVolumetric, toolsBarcode, toolsUpiQr, toolsThankYou, toolsTaxInvoice, toolsWhiteBg,
   toolsFourUp, toolsImageSize, toolsGstPrice,
   meeshoLabels, meeshoRto, meeshoPayments, meeshoImages, meeshoPacking,
   flipkartPrinting, flipkartSku, flipkartWeight, flipkartImages, flipkartDispatch,
