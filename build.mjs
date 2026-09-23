@@ -868,6 +868,9 @@ write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 ${urls.map((u) => `  <url><loc>${abs(u.loc)}</loc><lastmod>${u.lastmod}</lastmod><changefreq>${u.freq}</changefreq><priority>${u.pri}</priority></url>`).join('\n')}
 </urlset>`);
+// Build-time manifests are consumed by the Python generators and have no business
+// being served; .assetsignore keeps them (and macOS cruft) out of the upload.
+write('.assetsignore', `og-manifest.json\ncover-manifest.json\n**/.DS_Store\n`);
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /404.html\n\nSitemap: ${abs('/sitemap.xml')}\n`);
 write('manifest.webmanifest', JSON.stringify({
   name: `${site.name} – ${site.tagline}`, short_name: site.shortName, description: site.description, start_url: '/?source=pwa', scope: '/', display: 'standalone',

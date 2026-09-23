@@ -208,20 +208,29 @@ add an inline script, rebuild so its hash is picked up, or it will be blocked.
 
 ## Deploy
 
-Static output in `dist/`. Works on Cloudflare Pages, Netlify, Vercel, GitHub Pages or any web server
-(`_headers` is honoured by Cloudflare Pages and Netlify). Set `site.url` in `src/site.config.mjs`
-to your real domain before building — it feeds canonical URLs, sitemap and OG tags.
+Deployed to **Cloudflare Workers Static Assets** (not Pages — Cloudflare recommends Workers for
+new projects, and Pages only receives maintenance now). Config lives in `wrangler.jsonc`.
 
-`dist/` is not committed, so a host that builds from this repo needs Pillow for the OG images
-and blog cover art. On Cloudflare Pages or Netlify:
+```
+npm run deploy      # runs the full check suite, then wrangler deploy
+```
 
-| Setting | Value |
+There is no Worker script: `assets.directory` points at `dist/` and Cloudflare serves it from the
+edge, so no Worker invocations are billed. Three settings are deliberate:
+
+| Setting | Why |
 | --- | --- |
-| Build command | `pip install Pillow && npm run build` |
-| Output directory | `dist` |
+| `not_found_handling: "404-page"` | Workers does not infer this the way Pages did; without it, unmatched paths return a bare 404 instead of `404.html` |
+| `html_handling: "auto-trailing-slash"` | Serves `<slug>/index.html` at `/<slug>/`, matching the canonical URLs. Stated explicitly so a default change cannot silently alter them |
+| `workers_dev: false` | Stops the site being reachable at a second `*.workers.dev` address that Google could index as duplicate content |
 
-Without Pillow the HTML still builds, but `/og/*` and `/covers/*` are skipped and social previews
-break. To deploy without a build step instead, run `npm run build` locally and upload `dist/`.
+`_headers` is read by Workers and applied to asset responses (limits: 100 rules, 2,000 chars per
+line — this site uses 6 rules and a 409-char maximum). `dist/.assetsignore` keeps the build-time
+`og-manifest.json` and `cover-manifest.json` out of the upload.
+
+`dist/` is not committed. Deploys upload the locally built output, so the machine that deploys
+needs Python 3 with Pillow for the OG images and blog cover art. To build from CI instead, the
+build command is `pip install Pillow && npm run build` with output directory `dist`.
 
 ## Notes
 

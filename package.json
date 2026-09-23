@@ -8,11 +8,15 @@
     "build": "node build.mjs",
     "serve": "python3 -m http.server 8787 --directory dist",
     "dev": "npm run build && npm run serve",
+    "deploy": "npm run check && wrangler deploy",
     "test:labels": "node scripts/make-test-labels.cjs",
     "logos": "python3 scripts/prep-logos.py",
     "audit": "node scripts/audit.mjs",
     "contrast": "node scripts/contrast.mjs",
     "check": "npm run build && npm run audit && npm run contrast && npm run check:posts",
     "check:posts": "node scripts/check-posts.mjs"
+  },
+  "devDependencies": {
+    "wrangler": "^4.136.3"
   }
 }
