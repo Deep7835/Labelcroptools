@@ -289,6 +289,54 @@ const navTools = () => categories
   .map((c) => `<div class="mega-col"><h3>${icon(c.icon)} <a href="/${c.slug}/">${c.short}</a></h3><ul>${toolsIn(c.slug)
     .map((t) => `<li><a href="/${t.slug}/">${t.name}</a></li>`).join('')}</ul></div>`).join('');
 
+// Hero shortcut grid: eight everyday jobs with labels short enough for a 4-across tile.
+const HERO_TOOLS = [
+  ['pdf-crop', 'Crop PDF'], ['pages-per-sheet', '4 per sheet'], ['picklist-generator', 'Picklist'], ['gst-invoice-generator', 'GST invoice'],
+  ['barcode-generator', 'Barcode'], ['qr-code-generator', 'QR code'], ['profit-calculator', 'Profit'], ['product-image-resizer', 'Resize image'],
+];
+for (const [slug] of HERO_TOOLS) if (!tools.some((t) => t.slug === slug)) throw new Error(`Hero grid links to unknown tool "${slug}"`);
+
+// Desktop dropdown per category: its tools on the left, the newest guide that covers
+// one of those tools on the right, and a strip of site-wide links underneath. Guides are
+// handed out in category order without repeats, so neighbouring panels don't all show
+// the same post. Resolved on first use because `posts` is declared further down.
+let guideByCat;
+const featuredGuide = (c) => {
+  if (!guideByCat) {
+    guideByCat = new Map(); const used = new Set();
+    for (const cat of categories) {
+      const slugs = new Set(toolsIn(cat.slug).map((t) => t.slug));
+      const free = posts.filter((p) => !used.has(p) && p.tools?.some((s) => slugs.has(s)));
+      // A guide whose main (first-listed) tool is in this category beats a passing mention.
+      const g = free.find((p) => slugs.has(p.tools[0])) || free[0];
+      if (g) { used.add(g); guideByCat.set(cat.slug, g); }
+    }
+  }
+  return guideByCat.get(c.slug);
+};
+const megaPanel = (c) => {
+  const list = toolsIn(c.slug), g = featuredGuide(c);
+  return `<div class="mega" id="mega-${c.slug}">
+  <div class="wrap mega-body">
+    <div>
+      <div class="mega-head"><span>${esc(c.name)}</span><a href="/${c.slug}/">View all ${list.length} ${icon('arrow', 'ic ic-sm')}</a></div>
+      <ul class="mega-list">${list.map((t) => `<li><a class="mega-item" href="/${t.slug}/">${icon(t.icon)}<span class="mega-name">${esc(t.name)}${t.badge ? `<span class="mega-tag">${esc(t.badge)}</span>` : ''}</span><span class="mega-desc">${esc(t.short)}</span></a></li>`).join('')}</ul>
+    </div>
+    ${g ? `<a class="mega-feature" href="${blog.base}/${g.slug}/">
+      <span class="mega-art">${coverPic(g, { sizes: '320px' })}</span>
+      <span class="mega-kicker">Guide · ${readingTime(g.body)} min read</span>
+      <span class="mega-ftitle">${esc(g.title)}</span>
+      <span class="mega-fdesc">${esc(g.excerpt)}</span>
+      <span class="mega-more">Read the guide ${icon('arrow', 'ic ic-sm')}</span>
+    </a>` : ''}
+  </div>
+  <div class="mega-bar"><div class="wrap mega-bar-in">
+    <div class="mega-links"><a href="/#tools">${icon('grid')} All ${tools.length} tools</a><a href="${blog.base}/">${icon('file')} Seller guides</a><a href="/privacy/">${icon('shield')} Nothing is uploaded</a></div>
+    <div class="mega-cta"><span>Free forever, no signup.</span><a class="mega-btn" href="/shipping-label-cropper/">Crop a label</a></div>
+  </div></div>
+</div>`;
+};
+
 const header = (active = '') => `
 <a class="skip" href="#main">Skip to content</a>
 ${sprite}
@@ -299,11 +347,10 @@ ${logoSymbol}
       ${logo}
     </a>
     <nav class="main-nav" aria-label="Primary">
-      <div class="has-mega">
-        <button class="nav-btn" aria-expanded="false" aria-controls="mega">All tools ${icon('chevron', 'ic ic-sm')}</button>
-        <div class="mega" id="mega">${navTools()}</div>
-      </div>
-      ${categories.map((c) => `<a href="/${c.slug}/" ${active === c.slug ? 'aria-current="page"' : ''}>${c.short}</a>`).join('')}
+      ${categories.map((c) => `<div class="has-mega">
+        <a class="nav-link" href="/${c.slug}/" aria-expanded="false" aria-controls="mega-${c.slug}" ${active === c.slug ? 'aria-current="page"' : ''}>${c.short} ${icon('chevron', 'ic ic-sm')}</a>
+        ${megaPanel(c)}
+      </div>`).join('')}
       <a href="${blog.base}/" ${active === 'blog' ? 'aria-current="page"' : ''}>Guides</a>
     </nav>
     <div class="header-actions">
@@ -316,50 +363,26 @@ ${logoSymbol}
   <nav class="mobile-nav" id="mobile-nav" aria-label="Mobile" hidden>${navTools()}</nav>
 </header>`;
 
-// Footer tool columns: exactly four links each, so the grid reads as clean rows
-// instead of the 7-2 ragged columns the raw category counts produce (PDF Tools has
-// seven tools, Image Tools has two). Each heading links to its hub, which carries
-// the tools that do not fit here; nothing becomes unreachable.
+// Footer link columns. Individual tools are linked from the header's mega panels and the
+// mobile menu on every page, so the footer only needs the category hubs.
 const FOOTER_COLS = [
-  { title: 'Shipping labels',  href: '/label-tools/', slugs: ['meesho-label-cropper', 'flipkart-label-cropper', 'amazon-label-cropper', 'shipping-label-cropper'] },
-  { title: 'PDF tools',        href: '/pdf-tools/',   slugs: ['pdf-crop', 'pages-per-sheet', 'merge-pdf', 'split-pdf'] },
-  { title: 'Calculators & GST', href: '/calculators/', slugs: ['profit-calculator', 'gst-calculator', 'volumetric-weight-calculator', 'gst-invoice-generator'] },
-  { title: 'Generators & images', href: '/generators/', slugs: ['barcode-generator', 'qr-code-generator', 'product-image-resizer', 'image-compressor'] },
+  { title: 'Tools', links: categories.map((c) => [`/${c.slug}/`, c.name]) },
+  { title: 'Resources', links: [[`${blog.base}/`, 'Seller guides'], ...marketplaces.map((m) => [`${blog.base}/${m.slug}/`, m.slug === 'tools' ? 'How-to guides' : `${m.name} guides`]), ['/about/', 'About'], ['/contact/', 'Contact']] },
+  { title: 'Legal', links: [['/privacy/', 'Privacy Policy'], ['/terms/', 'Terms of Use'], ['/sitemap.xml', 'Sitemap'], [`${blog.base}/rss.xml`, 'RSS feed']] },
 ];
-
-// Fail the build rather than ship a lopsided footer or a dead link.
-for (const col of FOOTER_COLS) {
-  if (col.slugs.length !== 4) throw new Error(`Footer column "${col.title}" has ${col.slugs.length} links, expected 4`);
-  for (const slug of col.slugs) if (!tools.some((t) => t.slug === slug)) throw new Error(`Footer column "${col.title}" links to unknown tool "${slug}"`);
-}
-if (!categories.every((c) => FOOTER_COLS.some((col) => col.href === `/${c.slug}/`) || c.slug === 'image-tools'))
-  throw new Error('A category hub lost its footer link');
-
-// Footer-only short labels. The full name is right everywhere else, but at footer
-// column width this one wraps to two lines and breaks the four-row rhythm.
-const FOOTER_LABEL = { 'volumetric-weight-calculator': 'Volumetric Weight' };
-
-const footerCol = ({ title, href, slugs }) => `<div class="footer-col"><h3><a href="${href}">${esc(title)}</a></h3><ul>${slugs
-  .map((slug) => tools.find((t) => t.slug === slug))
-  .map((t) => `<li><a href="/${t.slug}/">${esc(FOOTER_LABEL[t.slug] || t.name)}</a></li>`).join('')}</ul></div>`;
+const footerCol = ({ title, links }, extra = '') => `<div class="footer-col"><h3>${esc(title)}</h3><ul>${links
+  .map(([href, label]) => `<li><a href="${href}">${esc(label)}</a></li>`).join('')}${extra}</ul></div>`;
 
 const footer = () => `
 <footer class="site-footer">
-  <div class="barcode-strip" aria-hidden="true"></div>
   <div class="wrap footer-grid">
     <div class="footer-brand">
       <a class="brand" href="/" aria-label="${esc(site.name)} home">${logo}</a>
-      <p>${esc(site.tagline)}. Every tool runs in your browser — your PDFs, photos and order data never leave your device.</p>
-      <p class="muted">Made in India 🇮🇳 for sellers on Meesho, Flipkart, Amazon and beyond. Not affiliated with any marketplace.</p>
-      <a class="footer-all" href="/#tools">Browse all ${tools.length} tools ${icon('arrow', 'ic ic-sm')}</a>
+      <p>${esc(site.tagline)}. Every tool runs in your browser, so your PDFs, photos and order data never leave your device.</p>
     </div>
-    ${FOOTER_COLS.map(footerCol).join('')}
-    <div class="footer-col"><h3><a href="${blog.base}/">Seller guides</a></h3><ul>${marketplaces.map((m) => `<li><a href="${blog.base}/${m.slug}/">${m.name} guides</a></li>`).join('')}<li><a href="${blog.base}/rss.xml">RSS feed</a></li></ul></div>
+    ${FOOTER_COLS.map((col) => footerCol(col, col.title === 'Legal' && needsConsent ? `<li>${consentFooterLink()}</li>` : '')).join('')}
   </div>
-  <div class="wrap footer-bottom">
-    <p>© ${new Date().getFullYear()} ${esc(site.name)}. Free forever.</p>
-    <nav aria-label="Footer"><a href="${blog.base}/">Guides</a><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/contact/">Contact</a><a href="/sitemap.xml">Sitemap</a>${consentFooterLink()}</nav>
-  </div>
+  <div class="wrap"><p class="footer-bottom">© ${new Date().getFullYear()} ${esc(site.name)}. Made in India. Not affiliated with any marketplace.</p></div>
 </footer>
 <div class="cmdk" id="cmdk" hidden role="dialog" aria-modal="true" aria-label="Search tools">
   <div class="cmdk-box">
@@ -407,8 +430,7 @@ const brandRotator = () => {
 
 const toolCard = (t) => `<a class="tool-card" href="/${t.slug}/" data-cat="${t.category}" data-name="${esc(t.name.toLowerCase())}" data-kw="${esc(t.keywords.join(' ').toLowerCase())}">
   <span class="tool-icon">${icon(t.icon)}</span>
-  ${t.badge ? `<span class="badge">${esc(t.badge)}</span>` : ''}
-  <span class="tool-name">${esc(t.name)}</span>
+  <span class="tool-name">${esc(t.name)}${t.badge ? `<span class="badge">${esc(t.badge)}</span>` : ''}</span>
   <span class="tool-short">${esc(t.short)}</span>
   <span class="tool-go">${icon('arrow')}</span>
 </a>`;
@@ -429,34 +451,33 @@ const toolPage = (t) => {
   const body = `
 <div class="wrap">
   ${breadcrumbs(crumbs)}
-  <section class="tool-hero">
-    <div class="tool-hero-icon">${icon(t.icon)}</div>
-    <h1>${esc(t.h1)}</h1>
+  <section class="tool-hero" data-cat="${t.category}">
+    <div class="th-top"><span class="tool-hero-icon">${icon(t.icon)}</span><h1>${esc(t.h1)}</h1></div>
     <p class="lede">${esc(t.tagline)}</p>
     <ul class="trust" aria-label="Highlights">
       <li>${icon('check')} Free forever</li><li>${icon('shield')} Nothing uploaded</li><li>${icon('zap')} Unlimited use</li><li>${icon('wifioff')} Works offline</li>
     </ul>
   </section>
   <section class="tool-panel ticket" id="tool" data-libs="${libs}" aria-label="${esc(t.name)}">
-    <div class="ticket-tab">${esc(cat.short)} · ${esc(t.name)}</div>
     ${t.panel}
     <noscript><p class="note">This tool needs JavaScript. Enable it in your browser to use the ${esc(t.name)}.</p></noscript>
   </section>
 
+  <div class="tool-layout">
   <article class="tool-content">
     <section class="howto" id="how-to">
       <h2>How to use the ${esc(t.name)}</h2>
-      <ol class="steps">${t.steps.map((s, i) => `<li id="step-${i + 1}"><span class="step-n">0${i + 1}</span><div><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></div></li>`).join('')}</ol>
+      <ol class="steps big">${t.steps.map((s, i) => `<li id="step-${i + 1}"><span class="step-n">0${i + 1}</span><div><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></div></li>`).join('')}</ol>
     </section>
-    <section class="why">
-      <h2>Why sellers use this ${esc(t.name.toLowerCase())}</h2>
+    <section class="why" id="why">
+      <h2>Why sellers use the ${esc(t.name)}</h2>
       ${t.intro.map((p) => `<p>${esc(p)}</p>`).join('')}
     </section>
-    <section class="benefits">
+    <section class="benefits" id="benefits">
       <h2>What you get</h2>
       <div class="grid-2">${t.benefits.map((b) => `<div class="benefit"><h3>${esc(b.title)}</h3><p>${esc(b.text)}</p></div>`).join('')}</div>
     </section>
-    <section class="features">
+    <section class="features" id="features">
       <h2>Features of the ${esc(t.name)}</h2>
       <div class="grid-3">${t.features.map((f) => `<div class="feature">${icon('check')}<div><h3>${esc(f.title)}</h3><p>${esc(f.text)}</p></div></div>`).join('')}</div>
     </section>
@@ -468,12 +489,17 @@ const toolPage = (t) => {
       </div>
       <a class="btn btn-primary btn-lg" href="#tool">${icon(t.icon)} Open the ${esc(t.name)}</a>
     </div>
-    <section class="related">
+    <section class="related" id="related">
       <h2>Related tools</h2>
       <div class="tool-grid">${related.map(toolCard).join('')}</div>
     </section>
     <p class="updated muted">Last updated ${t.updated}. ${esc(site.name)} is an independent tool site and is not affiliated with Meesho, Flipkart or Amazon.</p>
   </article>
+  <aside class="tool-aside" aria-label="On this page">
+    <p class="toc-label">On this page</p>
+    <ul class="onpage">${[['#tool', 'Use the tool'], ['#how-to', 'How to use it'], ['#why', 'Why sellers use it'], ['#benefits', 'What you get'], ['#features', 'Features'], ['#faq', 'FAQ'], ['#related', 'Related tools']].map(([h, l]) => `<li><a href="${h}">${l}</a></li>`).join('')}</ul>
+  </aside>
+  </div>
 </div>`;
   const scripts = `<script src="${asset('assets/js/engine.js')}" defer></script>\n<script src="${asset(`assets/js/tools/${t.script}.js`)}" defer></script>`;
   return page(
@@ -492,9 +518,8 @@ const categoryPage = (c) => {
   const body = `
 <div class="wrap">
   ${breadcrumbs(crumbs)}
-  <section class="cat-hero">
-    <div class="tool-hero-icon">${icon(c.icon)}</div>
-    <h1>${esc(c.name)}</h1>
+  <section class="cat-hero" data-cat="${c.slug}">
+    <div class="th-top"><span class="tool-hero-icon">${icon(c.icon)}</span><h1>${esc(c.name)}</h1></div>
     <p class="lede">${esc(c.intro)}</p>
   </section>
   <section class="tool-grid big" aria-label="${esc(c.name)}">${list.map(toolCard).join('')}</section>
@@ -535,26 +560,19 @@ const homePage = () => {
       <div class="dropzone" id="home-drop" tabindex="0" role="button" aria-label="Drop any shipping label PDF to auto-detect the marketplace">
         <input type="file" id="home-file" accept="application/pdf" hidden>
         <div class="dz-inner">
-          <span class="dz-tab">ANY LABEL PDF</span>
-          ${icon('upload', 'ic ic-xl')}
+          <span class="dz-icon">${icon('upload')}</span>
           <p class="dz-title">Drop any shipping label PDF</p>
-          <p class="dz-sub">We detect Meesho / Flipkart / Amazon and open the right cropper</p>
+          <p class="dz-sub">Meesho, Flipkart or Amazon: we detect it and open the right cropper.</p>
+          <span class="dz-choose">Choose PDF</span>
         </div>
+        <p class="dz-foot">${icon('shield', 'ic ic-sm')} Your PDF stays on your device</p>
       </div>
       <p class="status" id="home-status" role="status" aria-live="polite"></p>
-      <a class="float-pill" href="#tools">Browse all ${tools.length} tools ${icon('plus', 'ic ic-sm')}</a>
     </div>
 
-    <div class="bento bento-icons" aria-hidden="true">
-      <span class="ic-float f1">${icon('scissors')}</span>
-      <span class="ic-float f2">${icon('grid')}</span>
-      <span class="ic-float f3">${icon('calculator')}</span>
-      <span class="ic-float f4">${icon('barcode')}</span>
-      <span class="ic-float f5">${icon('qr')}</span>
-      <span class="ic-float f6">${icon('crop')}</span>
-      <span class="ic-float f7">${icon('receipt')}</span>
-      <span class="ic-float f8">${icon('image')}</span>
-      <span class="ic-float f9">${icon('list')}</span>
+    <div class="bento bento-tools">
+      <div class="bt-head"><span>Popular tools</span><a href="#tools">All ${tools.length} ${icon('arrow', 'ic ic-sm')}</a></div>
+      <ul class="bt-grid">${HERO_TOOLS.map(([slug, label]) => { const t = tools.find((x) => x.slug === slug); return `<li><a class="bt-tile" href="/${t.slug}/" title="${esc(t.name)}">${icon(t.icon)}<span>${esc(label)}</span></a></li>`; }).join('')}</ul>
     </div>
 
     <div class="bento bento-list">

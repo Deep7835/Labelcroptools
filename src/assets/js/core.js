@@ -25,11 +25,45 @@
     mobileNav.hidden = !open;
     menuBtn.setAttribute('aria-expanded', String(open));
   });
-  $$('.nav-btn').forEach((b) => b.addEventListener('click', () => {
-    const p = b.closest('.has-mega'); const open = !p.classList.contains('open');
-    p.classList.toggle('open', open); b.setAttribute('aria-expanded', String(open));
-  }));
-  document.addEventListener('click', (e) => { if (!e.target.closest('.has-mega')) $$('.has-mega.open').forEach((p) => p.classList.remove('open')); });
+  // Mega panels open on mouse hover (after a short intent delay, so sweeping across the
+  // header doesn't flash them) and on keyboard focus. Touch taps just follow the link to
+  // the category page. data-instant skips the entrance when swapping between panels or
+  // opening from the keyboard; only a fresh open or a close animates.
+  const hdr = $('.site-header'), megas = $$('.has-mega');
+  let openT, closeT, quiet = false;
+  const setMega = (m, instant = false) => {
+    clearTimeout(openT); clearTimeout(closeT);
+    const cur = megas.find((x) => x.classList.contains('open'));
+    if (cur === m) return;
+    hdr.toggleAttribute('data-instant', instant || Boolean(cur && m));
+    for (const [el, on] of [[cur, false], [m, true]]) {
+      if (!el) continue;
+      el.classList.toggle('open', on);
+      $('.nav-link', el).setAttribute('aria-expanded', String(on));
+    }
+  };
+  megas.forEach((m) => {
+    m.addEventListener('pointerenter', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      clearTimeout(closeT); clearTimeout(openT);
+      openT = setTimeout(() => setMega(m), megas.some((x) => x.classList.contains('open')) ? 0 : 80);
+    });
+    m.addEventListener('pointerleave', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      clearTimeout(openT);
+      closeT = setTimeout(() => setMega(null), 120);
+    });
+    m.addEventListener('focusin', () => { if (!quiet) setMega(m, true); });
+  });
+  document.addEventListener('focusin', (e) => { if (!e.target.closest('.has-mega')) setMega(null, true); });
+  document.addEventListener('click', (e) => { if (!e.target.closest('.has-mega')) setMega(null); });
+  document.addEventListener('keydown', (e) => {
+    const cur = megas.find((x) => x.classList.contains('open'));
+    if (e.key !== 'Escape' || !cur) return;
+    setMega(null, true);
+    // Return focus to the trigger without its focusin reopening the panel.
+    quiet = true; $('.nav-link', cur).focus(); quiet = false;
+  });
 
   // ── toast ────────────────────────────────────────────────────────────
   let toastT;

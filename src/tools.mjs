@@ -9,10 +9,10 @@ const dropzone = (opts = {}) => `
 <div class="dropzone" id="drop" tabindex="0" role="button" aria-label="${opts.label || 'Select PDF file'}">
   <input type="file" id="file" accept="${opts.accept || 'application/pdf'}" ${opts.multiple ? 'multiple' : ''} hidden>
   <div class="dz-inner">
-    <span class="dz-tab">${opts.tab || 'SELECT PDF'}</span>
-    <svg class="ic ic-xl" aria-hidden="true"><use href="#i-upload"/></svg>
+    <span class="dz-icon"><svg class="ic" aria-hidden="true"><use href="#i-upload"/></svg></span>
     <p class="dz-title">${opts.title || 'Drop your PDF here'}</p>
     <p class="dz-sub">${opts.sub || 'or click to browse · stays on your device'}</p>
+    <span class="dz-choose">${opts.accept?.startsWith('image') ? 'Choose images' : opts.multiple ? 'Choose PDFs' : 'Choose PDF'}</span>
   </div>
 </div>
 <div class="file-list" id="files" aria-live="polite"></div>`;
@@ -67,7 +67,7 @@ const cropperFeatures = (mp) => [
 
 const labelPanel = (market) => `
 <div class="tool-ui" data-tool="label-cropper" data-market="${market}">
-  ${dropzone({ multiple: true, tab: 'SELECT LABEL PDF', title: 'Drop your label PDF here', sub: 'Multiple files allowed · they are merged in order · nothing is uploaded' })}
+  ${dropzone({ multiple: true, title: 'Drop your label PDF here', sub: 'Multiple files allowed · they are merged in order · nothing is uploaded' })}
   <div class="opts">
     ${radios('invoice', 'Invoice', [{ v: 'without', l: 'Without invoice' }, { v: 'with', l: 'With invoice' }])}
     ${radios('layout', 'Output layout', [{ v: 'thermal', l: 'Label printer (1 per page)' }, { v: 'a4x4', l: 'A4 · 4 per sheet' }, { v: 'a4x2', l: 'A4 · 2 per sheet' }])}
@@ -321,7 +321,7 @@ export const tools = [
     libs: ['pdfjs'],
     panel: `
 <div class="tool-ui" data-tool="picklist">
-  ${dropzone({ multiple: true, tab: 'SELECT LABEL PDF', title: 'Drop Meesho / Flipkart / Amazon label PDFs', sub: 'Multiple files allowed · nothing is uploaded' })}
+  ${dropzone({ multiple: true, title: 'Drop Meesho / Flipkart / Amazon label PDFs', sub: 'Multiple files allowed · nothing is uploaded' })}
   <div class="stats" id="stats" hidden></div>
   <div class="tablewrap" id="tablewrap" hidden>
     <div class="table-tools">
@@ -389,7 +389,7 @@ export const tools = [
     libs: ['pdfjs', 'pdflib'],
     panel: `
 <div class="tool-ui" data-tool="pdf-crop">
-  ${dropzone({ tab: 'SELECT PDF', title: 'Drop a PDF to crop', sub: 'Click to browse · stays on your device' })}
+  ${dropzone({ title: 'Drop a PDF to crop', sub: 'Click to browse · stays on your device' })}
   <div class="crop-stage" id="stage" hidden>
     <div class="crop-canvas-wrap" id="wrap">
       <canvas id="cv"></canvas>
@@ -469,7 +469,7 @@ export const tools = [
     libs: ['pdfjs', 'pdflib'],
     panel: `
 <div class="tool-ui" data-tool="nup">
-  ${dropzone({ tab: 'SELECT PDF', title: 'Drop a PDF to arrange', sub: 'Click to browse · stays on your device' })}
+  ${dropzone({ title: 'Drop a PDF to arrange', sub: 'Click to browse · stays on your device' })}
   <div class="nup-layout" id="nupui" hidden>
     <div class="opts">
       ${select('n', 'Pages per sheet', [{ v: 2, l: '2 pages' }, { v: 4, l: '4 pages', s: true }, { v: 6, l: '6 pages' }, { v: 8, l: '8 pages' }, { v: 9, l: '9 pages' }, { v: 16, l: '16 pages' }])}
@@ -548,7 +548,7 @@ export const tools = [
     libs: ['pdfjs', 'pdflib'],
     panel: `
 <div class="tool-ui" data-tool="merge">
-  ${dropzone({ multiple: true, tab: 'SELECT PDFS', title: 'Drop two or more PDFs', sub: 'Drag rows to reorder · nothing is uploaded' })}
+  ${dropzone({ multiple: true, title: 'Drop two or more PDFs', sub: 'Drag rows to reorder · nothing is uploaded' })}
   <div class="opts" id="mopts" hidden>
     ${radios('order', 'Order', [{ v: 'manual', l: 'As listed' }, { v: 'name', l: 'By file name' }, { v: 'date', l: 'By date modified' }])}
   </div>
@@ -601,7 +601,7 @@ export const tools = [
     libs: ['pdfjs', 'pdflib', 'jszip'],
     panel: `
 <div class="tool-ui" data-tool="split">
-  ${dropzone({ tab: 'SELECT PDF', title: 'Drop a PDF to split', sub: 'Click to browse · stays on your device' })}
+  ${dropzone({ title: 'Drop a PDF to split', sub: 'Click to browse · stays on your device' })}
   <div class="opts" id="sopts" hidden>
     ${radios('mode', 'Split mode', [{ v: 'ranges', l: 'Extract page ranges' }, { v: 'every', l: 'Every N pages' }, { v: 'single', l: 'Each page separately' }])}
     <div data-show="mode=ranges">${text('ranges', 'Pages to extract (e.g. 1-3, 5, 8-10)', '', 'placeholder="1-3, 5, 8-10"')}
@@ -658,7 +658,7 @@ export const tools = [
     libs: ['pdfjs', 'pdflib'],
     panel: `
 <div class="tool-ui" data-tool="rotate">
-  ${dropzone({ tab: 'SELECT PDF', title: 'Drop a PDF to rotate or edit', sub: 'Click to browse · stays on your device' })}
+  ${dropzone({ title: 'Drop a PDF to rotate or edit', sub: 'Click to browse · stays on your device' })}
   <div class="rot-tools" id="rtools" hidden>
     <button class="btn btn-sm" id="rall">Rotate all 90°</button>
     <button class="btn btn-sm" id="rallccw">Rotate all −90°</button>
@@ -715,7 +715,7 @@ export const tools = [
     libs: ['pdflib'],
     panel: `
 <div class="tool-ui" data-tool="img2pdf">
-  ${dropzone({ multiple: true, accept: 'image/*', tab: 'SELECT IMAGES', title: 'Drop JPG, PNG or WebP images', sub: 'Drag to reorder · nothing is uploaded' })}
+  ${dropzone({ multiple: true, accept: 'image/*', title: 'Drop JPG, PNG or WebP images', sub: 'Drag to reorder · nothing is uploaded' })}
   <div class="opts" id="iopts" hidden>
     ${radios('page', 'Page size', [{ v: 'fit', l: 'Fit to image' }, { v: 'A4', l: 'A4' }, { v: 'Letter', l: 'Letter' }, { v: '4x6', l: '4 × 6 in' }])}
     ${radios('orient', 'Orientation', [{ v: 'auto', l: 'Auto' }, { v: 'portrait', l: 'Portrait' }, { v: 'landscape', l: 'Landscape' }], 0, 'data-show="page!=fit"')}
@@ -770,7 +770,7 @@ export const tools = [
     libs: ['pdfjs', 'jszip'],
     panel: `
 <div class="tool-ui" data-tool="pdf2img">
-  ${dropzone({ tab: 'SELECT PDF', title: 'Drop a PDF to convert', sub: 'Click to browse · stays on your device' })}
+  ${dropzone({ title: 'Drop a PDF to convert', sub: 'Click to browse · stays on your device' })}
   <div class="opts" id="popts" hidden>
     ${radios('fmt', 'Format', [{ v: 'jpeg', l: 'JPG' }, { v: 'png', l: 'PNG' }])}
     ${radios('dpi', 'Resolution', [{ v: 96, l: '96 DPI (screen)' }, { v: 150, l: '150 DPI', }, { v: 300, l: '300 DPI (print)' }], 1)}
@@ -1332,7 +1332,7 @@ export const tools = [
     libs: ['jszip'],
     panel: `
 <div class="tool-ui" data-tool="resizer">
-  ${dropzone({ multiple: true, accept: 'image/*', tab: 'SELECT IMAGES', title: 'Drop product photos', sub: 'JPG, PNG, WebP · batch supported · nothing is uploaded' })}
+  ${dropzone({ multiple: true, accept: 'image/*', title: 'Drop product photos', sub: 'JPG, PNG, WebP · batch supported · nothing is uploaded' })}
   <div class="opts" id="ropts" hidden>
     ${select('preset', 'Preset', [{ v: '1000x1000', l: 'Square 1000 × 1000 (Flipkart / Amazon min)', s: true }, { v: '2000x2000', l: 'Square 2000 × 2000 (Amazon zoom)' }, { v: '1500x1500', l: 'Square 1500 × 1500' }, { v: '1200x1600', l: 'Portrait 3:4 1200 × 1600 (fashion)' }, { v: '1080x1350', l: 'Portrait 4:5 1080 × 1350 (Instagram)' }, { v: '1080x1080', l: 'Square 1080 × 1080 (Instagram)' }, { v: 'custom', l: 'Custom' }])}
     <div class="grid2" data-show="preset=custom">${num('cw', 'Width (px)', 1000, 'min="50"')}${num('ch', 'Height (px)', 1000, 'min="50"')}</div>
@@ -1394,7 +1394,7 @@ export const tools = [
     libs: ['jszip'],
     panel: `
 <div class="tool-ui" data-tool="compressor">
-  ${dropzone({ multiple: true, accept: 'image/*', tab: 'SELECT IMAGES', title: 'Drop images to compress', sub: 'JPG, PNG, WebP · batch supported · nothing is uploaded' })}
+  ${dropzone({ multiple: true, accept: 'image/*', title: 'Drop images to compress', sub: 'JPG, PNG, WebP · batch supported · nothing is uploaded' })}
   <div class="opts" id="copts" hidden>
     <div class="grid3">
       ${num('q', 'Quality (%)', 80, 'min="10" max="100"')}
