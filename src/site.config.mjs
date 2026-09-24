@@ -19,8 +19,12 @@ export const site = {
   whatsapp: '', // e.g. '919999999999' → adds a WhatsApp support link when set
   foundingYear: 2026,
   updated: '2026-09-23',
-  // Public by design: Google serves this token for you to publish. Not a secret.
-  googleSiteVerification: '0T2yBm7gkq2AgVANM2Zgf86eXc-gryrgYyfaAGoxNYY',
+  // Public by design: Google serves these tokens for you to publish. Not secrets.
+  // One per Search Console owner/property; removing one un-verifies that owner.
+  googleSiteVerification: [
+    '0T2yBm7gkq2AgVANM2Zgf86eXc-gryrgYyfaAGoxNYY',
+    'iwLFGhMPanm5zXVnMf57TQO2Lor5GKrR9kYaoaEt7P0',
+  ],
 };
 
 // ─── Analytics ────────────────────────────────────────────────────────────
@@ -42,7 +46,7 @@ export const analytics = {
   domain: '',          // plausible: the site domain you registered
   scriptUrl: '',       // plausible / umami: self-hosted script URL (optional)
   websiteId: '',       // umami website id, or Cloudflare Web Analytics token
-  measurementId: 'G-SVFL2Y1D83',   // ga4: G-XXXXXXXXXX
+  measurementId: 'G-SEGFZD3EL4',   // ga4: G-XXXXXXXXXX
 };
 
 // Providers that store or read anything on the visitor's device.

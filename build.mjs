@@ -239,7 +239,7 @@ const head = ({ title, description, url, ogImage, extraLd = [], noindex = false,
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-${site.googleSiteVerification ? `<meta name="google-site-verification" content="${esc(site.googleSiteVerification)}">\n` : ''}<meta name="robots" content="${noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'}">
+${[].concat(site.googleSiteVerification || []).map(t => `<meta name="google-site-verification" content="${esc(t)}">\n`).join('')}<meta name="robots" content="${noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'}">
 <link rel="canonical" href="${abs(url)}">
 <link rel="alternate" hreflang="en-IN" href="${abs(url)}">
 <link rel="alternate" hreflang="en" href="${abs(url)}">
