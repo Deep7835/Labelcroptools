@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import { site, categories, brands, brandRotateMs, analytics, consentRequiredFor, edgeAnalytics } from './src/site.config.mjs';
 import { tools } from './src/tools.mjs';
 import { sprite, icon } from './src/icons.mjs';
@@ -14,7 +15,7 @@ import { blog, marketplaces } from './src/blog.mjs';
 import { posts as allPosts } from './src/posts/index.mjs';
 import { markdown, readingTime } from './src/markdown.mjs';
 
-const ROOT = path.dirname(new URL(import.meta.url).pathname);
+const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const SRC = path.join(ROOT, 'src');
 const DIST = path.join(ROOT, 'dist');
 
