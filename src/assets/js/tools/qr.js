@@ -19,7 +19,7 @@
     const n = qr.getModuleCount(), cell = size / (n + 2 * margin), capH = cap ? Math.round(size * 0.09) : 0;
     const cv = document.createElement('canvas'); cv.width = size; cv.height = size + capH; const ctx = cv.getContext('2d'); ctx.fillStyle = bg; ctx.fillRect(0, 0, cv.width, cv.height); ctx.fillStyle = fg;
     for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) ctx.fillRect(Math.floor((c + margin) * cell), Math.floor((r + margin) * cell), Math.ceil(cell), Math.ceil(cell));
-    if (cap) { ctx.font = `600 ${Math.round(size * 0.05)}px 'Instrument Sans', Helvetica, Arial, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(cap, size / 2, size + capH / 2, size - 16); }
+    if (cap) { ctx.font = `600 ${Math.round(size * 0.05)}px 'Uncut Sans', Helvetica, Arial, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(cap, size / 2, size + capH / 2, size - 16); }
     let svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${n + 2 * margin} ${n + 2 * margin}" width="${size}" height="${size}" shape-rendering="crispEdges"><rect width="100%" height="100%" fill="${bg}"/><path fill="${fg}" d="`;
     for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) svg += `M${c + margin} ${r + margin}h1v1h-1z`;
     svg += '"/></svg>';

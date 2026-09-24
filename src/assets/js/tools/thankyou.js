@@ -18,7 +18,7 @@
     return true;
   }
   async function draw() {
-    await document.fonts.load('800 40px "Bricolage Grotesque"'); await document.fonts.load('500 20px "Instrument Sans"'); await document.fonts.load('600 20px "IBM Plex Mono"');
+    await document.fonts.load('700 40px "Uncut Sans"'); await document.fonts.load('500 20px "Uncut Sans"'); await document.fonts.load('600 20px "IBM Plex Mono"');
     const sz = SIZES[$('#size').value]; const W = px(sz.w), H = px(sz.h); cv.width = W; cv.height = H;
     const tpl = $('input[name=tpl]:checked').value, accent = $('#accent').value, brand = val('brand') || 'Your Brand', head = val('headline') || 'Thank you!', msg = val('msg'), ig = val('ig').replace(/^@/, ''), wa = val('wa'), web = val('web'), cta = val('cta');
     const portrait = H > W; const ink = '#12110F', paper = '#FFFDF7';
@@ -28,7 +28,7 @@
     const textX = tpl === 'minimal' ? P + 26 * S_ : P, textW = W - textX - P;
     // measure header (brand + headline)
     const brandF = `600 ${Math.round(24 * S_)}px "IBM Plex Mono", monospace`;
-    const hFont = `800 ${Math.round((portrait ? 72 : 60) * S_)}px "Bricolage Grotesque", sans-serif`, hLH = (portrait ? 76 : 64) * S_;
+    const hFont = `700 ${Math.round((portrait ? 72 : 60) * S_)}px "Uncut Sans", sans-serif`, hLH = (portrait ? 76 : 64) * S_;
     const hLines = wrap(head, textW, hFont).slice(0, 2);
     const headerH = P + 34 * S_ + hLines.length * hLH + 16 * S_;
     // background + template chrome
@@ -47,7 +47,7 @@
     let qrSize = 0, qx = 0, qy = 0;
     if (hasQR) { qrSize = portrait ? Math.round(Math.min(W * 0.46, lowerH * 0.55)) : Math.round(Math.min(lowerH - 26 * S_, H * 0.4, W * 0.28)); qx = portrait ? Math.round((W - qrSize) / 2) : W - P - qrSize; qy = portrait ? H - P - footerH - qrSize - 40 * S_ : headerH + 8 * S_ + Math.max(0, (lowerH - qrSize - 26 * S_) / 2); }
     const bodyW = hasQR && !portrait ? qx - 30 * S_ - textX : textW;
-    const mFont = `500 ${Math.round((portrait ? 30 : 25) * S_)}px "Instrument Sans", sans-serif`, mLH = (portrait ? 40 : 33) * S_;
+    const mFont = `500 ${Math.round((portrait ? 30 : 25) * S_)}px "Uncut Sans", sans-serif`, mLH = (portrait ? 40 : 33) * S_;
     ctx.fillStyle = ink; ctx.font = mFont; const maxLines = Math.max(1, Math.floor((H - P - footerH - y - (portrait && hasQR ? qrSize + 40 * S_ : 0)) / mLH));
     for (const ln of wrap(msg, bodyW, mFont).slice(0, maxLines)) { ctx.fillText(ln, textX, y); y += mLH; }
     // footer handles
@@ -57,7 +57,7 @@
     if (hasQR) {
       ctx.fillStyle = '#fff'; ctx.fillRect(qx - 8 * S_, qy - 8 * S_, qrSize + 16 * S_, qrSize + 16 * S_); ctx.strokeStyle = ink; ctx.lineWidth = 3 * S_; ctx.strokeRect(qx - 8 * S_, qy - 8 * S_, qrSize + 16 * S_, qrSize + 16 * S_);
       await drawQR(qx, qy, qrSize, ink, '#fff');
-      if (cta) { ctx.font = `600 ${Math.round(16 * S_)}px "Instrument Sans", sans-serif`; ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(cta, qx + qrSize / 2, qy + qrSize + 14 * S_, qrSize + 60 * S_); ctx.textAlign = 'left'; }
+      if (cta) { ctx.font = `600 ${Math.round(16 * S_)}px "Uncut Sans", sans-serif`; ctx.fillStyle = ink; ctx.textAlign = 'center'; ctx.textBaseline = 'top'; ctx.fillText(cta, qx + qrSize / 2, qy + qrSize + 14 * S_, qrSize + 60 * S_); ctx.textAlign = 'left'; }
     }
   }
   ui.addEventListener('input', () => { clearTimeout(t); t = setTimeout(draw, 120); }); draw();

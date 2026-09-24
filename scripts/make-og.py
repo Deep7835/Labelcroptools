@@ -53,18 +53,18 @@ def og(item):
     mono = font('PlexMono.ttf', 20)
     d.text((64 + 215, 64 + 23), item['eyebrow'].upper(), font=mono, fill=MUTED, anchor='mm')
     # title
-    title_f = font('Outfit.ttf', 78, [700])
+    title_f = font('UncutSans.ttf', 78, [700, 0])
     lines = wrap(d, item['title'], title_f, W - 128)
-    if len(lines) > 3: title_f = font('Outfit.ttf', 62, [700]); lines = wrap(d, item['title'], title_f, W - 128)
+    if len(lines) > 3: title_f = font('UncutSans.ttf', 62, [700, 0]); lines = wrap(d, item['title'], title_f, W - 128)
     y = 150
     for ln in lines[:3]:
         d.text((64, y), ln, font=title_f, fill=INK); y += int(title_f.size * 1.05)
-    sub_f = font('Outfit.ttf', 30, [450])
+    sub_f = font('UncutSans.ttf', 30, [450, 0])
     for ln in wrap(d, item['sub'], sub_f, W - 128)[:2]:
         d.text((64, y + 14), ln, font=sub_f, fill=MUTED); y += 40
     # footer brand
     brand_mark(d, 64, H - 130, 56)
-    d.text((136, H - 124), item['brand'], font=font('Outfit.ttf', 34, [700]), fill=INK)
+    d.text((136, H - 124), item['brand'], font=font('UncutSans.ttf', 34, [700, 0]), fill=INK)
     d.text((136, H - 84), item['domain'] + '  ·  free  ·  no upload  ·  no signup', font=font('PlexMono.ttf', 18), fill=MUTED)
     return im
 

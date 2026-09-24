@@ -270,8 +270,7 @@ ${site.twitter ? `<meta name="twitter:site" content="${site.twitter}">\n` : ''}<
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
 <link rel="alternate" type="application/rss+xml" title="${esc(site.name)} — ${esc(blog.title)}" href="/blog/rss.xml">
-<link rel="preload" href="/assets/fonts/outfit-latin.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/assets/fonts/instrument-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/assets/fonts/uncutsans-var.woff2" as="font" type="font/woff2" crossorigin>
 ${preload || ''}
 <link rel="stylesheet" href="${asset('assets/css/main.css')}">
 ${themeScript}
