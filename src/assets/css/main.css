@@ -140,8 +140,9 @@ kbd { font: 600 11px/1 var(--font-mono); border: 1.5px solid var(--line-field); 
 .btn-danger { background: var(--danger-bg); color: var(--danger); }
 .btn:disabled, .btn[aria-disabled="true"] { opacity: .45; cursor: not-allowed; box-shadow: none; transform: none; }
 .btns { display: flex; gap: 10px; flex-wrap: wrap; }
-.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border: 2px solid var(--line-field); border-radius: 999px; background: var(--card); font: 600 .85rem/1.2 var(--font-body); cursor: pointer; color: var(--ink); text-decoration: none; }
-.chip:hover { border-color: var(--line); }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 13px; border: 1px solid var(--line-field); border-radius: 999px; background: var(--card); font: 600 .85rem/1.2 var(--font-body); cursor: pointer; color: var(--ink); text-decoration: none; transition: background-color .15s, border-color .15s, color .15s, scale .15s; }
+.chip:hover { border-color: var(--ink); }
+button.chip:active { scale: .96; }
 .chip.active { background: var(--cta); color: var(--cta-ink); border-color: transparent; box-shadow: var(--shadow-sm); }
 
 /* ── ticket card ──────────────────────────────────────────────────────── */
@@ -325,16 +326,20 @@ progress { width: 100%; height: 10px; accent-color: var(--ink); }
 
 /* ── tool cards ───────────────────────────────────────────────────────── */
 .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 16px; }
-.tool-card { position: relative; display: flex; flex-direction: column; gap: 6px; padding: 20px; border: 1px solid var(--line); border-radius: var(--r); background: var(--card); text-decoration: none; box-shadow: var(--shadow-sm); transition: transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .18s ease; overflow: hidden; }
-.tool-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-.tool-card:hover .tool-icon { background: var(--cta); color: var(--cta-ink); }
-.tool-icon { width: 46px; height: 46px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); display: grid; place-items: center; margin-bottom: 10px; transition: background .2s, color .2s; }
+/* Edge is a 1px ring inside the shadow stack (not a border) so hover can lift it with the elevation. */
+.tool-card { --pad: 20px; position: relative; display: flex; flex-direction: column; gap: 6px; padding: var(--pad); border-radius: var(--r); background: var(--card); text-decoration: none; box-shadow: 0 0 0 1px var(--line), var(--shadow-sm); transition: transform .18s cubic-bezier(.2,.7,.3,1), box-shadow .18s ease; overflow: hidden; }
+.tool-icon { width: 46px; height: 46px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); display: grid; place-items: center; margin-bottom: 10px; transition: background-color .15s, color .15s, border-color .15s; }
 .tool-name { font-family: var(--font-display); font-weight: 700; font-size: 1.1rem; letter-spacing: -0.01em; }
-.tool-short { font-size: .88rem; color: var(--ink-2); line-height: 1.45; }
-.tool-go { position: absolute; right: 14px; bottom: 14px; opacity: 0; transform: translateX(-6px); transition: all .15s; }
-.tool-card:hover .tool-go { opacity: 1; transform: none; }
-.badge { position: absolute; top: 16px; right: 16px; font: 600 10px/1 var(--font-mono); text-transform: uppercase; letter-spacing: .08em; background: var(--accent-2); color: var(--accent); border: 1px solid var(--line); padding: 6px 10px; border-radius: 999px; }
-.tool-grid.big .tool-card { padding: 22px; }
+.tool-short { font-size: .88rem; color: var(--ink-2); line-height: 1.45; text-wrap: pretty; }
+.tool-go { position: absolute; right: 14px; bottom: 14px; display: grid; opacity: 0; scale: .25; filter: blur(4px); transition-property: opacity, scale, filter; transition-duration: .3s; transition-timing-function: cubic-bezier(0.2, 0, 0, 1); }
+/* Badge (24px tall) sits on the icon's (46px) centre line and on the card's padding edge. */
+.badge { position: absolute; top: calc(var(--pad) + 11px); right: var(--pad); font: 600 10px/1 var(--font-mono); text-transform: uppercase; letter-spacing: .08em; background: var(--accent-2); color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent); padding: 6px 10px; border-radius: 999px; }
+@media (hover: hover) {
+  .tool-card:hover { transform: translateY(-3px); box-shadow: 0 0 0 1px var(--line), var(--shadow-lg); }
+  .tool-card:hover .tool-icon { background: var(--cta); color: var(--cta-ink); border-color: transparent; }
+  .tool-card:hover .tool-go { opacity: 1; scale: 1; filter: blur(0); }
+}
+.tool-grid.big .tool-card { --pad: 22px; }
 .tools-section { padding: 72px 20px 0; }
 .section-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; margin-bottom: 26px; }
 .section-head h2 { margin: 0; }
