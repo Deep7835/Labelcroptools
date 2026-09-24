@@ -46,7 +46,7 @@ export const analytics = {
   domain: '',          // plausible: the site domain you registered
   scriptUrl: '',       // plausible / umami: self-hosted script URL (optional)
   websiteId: '',       // umami website id, or Cloudflare Web Analytics token
-  measurementId: 'G-SVFL2Y1D83',   // ga4: G-XXXXXXXXXX
+  measurementId: 'G-SEGFZD3EL4',   // ga4: G-XXXXXXXXXX
 };
 
 // Providers that store or read anything on the visitor's device.
