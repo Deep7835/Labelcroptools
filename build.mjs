@@ -45,6 +45,11 @@ const genAsset = (rel) => `/${rel}?v=${BUILD_ID}`;
 const abs = (p) => site.url + p;
 const catOf = (slug) => categories.find((c) => c.slug === slug);
 const toolsIn = (cat) => tools.filter((t) => t.category === cat);
+// Wordmark lives once per page as a <symbol>; header and footer <use> it. The dark
+// half is currentColor so it follows the theme's ink colour.
+const logoSvg = fs.readFileSync(path.join(SRC, 'assets', 'img', 'logo.svg'), 'utf8').trim();
+const logoSymbol = logoSvg.replace(/^<svg xmlns="[^"]+" (viewBox="[^"]+")>/, '<svg style="display:none" aria-hidden="true"><symbol id="logo" $1>').replace(/<\/svg>$/, '</symbol></svg>');
+const logo = '<svg class="brand-logo" aria-hidden="true"><use href="#logo"/></svg>';
 
 // ── reset dist ───────────────────────────────────────────────────────────
 fs.rmSync(DIST, { recursive: true, force: true });
@@ -287,11 +292,11 @@ const navTools = () => categories
 const header = (active = '') => `
 <a class="skip" href="#main">Skip to content</a>
 ${sprite}
+${logoSymbol}
 <header class="site-header">
   <div class="wrap header-inner">
     <a class="brand" href="/" aria-label="${esc(site.name)} home">
-      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="1" y="1" width="30" height="30" rx="9" fill="var(--cta)"/><path d="M9 11h14M9 16h14M9 21h8" stroke="var(--cta-ink)" stroke-width="2.6" stroke-linecap="round"/></svg></span>
-      <span class="brand-name">${esc(site.name)}</span>
+      ${logo}
     </a>
     <nav class="main-nav" aria-label="Primary">
       <div class="has-mega">
@@ -343,7 +348,7 @@ const footer = () => `
   <div class="barcode-strip" aria-hidden="true"></div>
   <div class="wrap footer-grid">
     <div class="footer-brand">
-      <a class="brand" href="/"><span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32"><rect x="2" y="2" width="28" height="28" rx="7" fill="var(--accent)" stroke="var(--ink)" stroke-width="2"/><path d="M9 11h14M9 16h14M9 21h8" stroke="var(--ink)" stroke-width="3" stroke-linecap="round"/></svg></span><span class="brand-name">${esc(site.name)}</span></a>
+      <a class="brand" href="/" aria-label="${esc(site.name)} home">${logo}</a>
       <p>${esc(site.tagline)}. Every tool runs in your browser — your PDFs, photos and order data never leave your device.</p>
       <p class="muted">Made in India 🇮🇳 for sellers on Meesho, Flipkart, Amazon and beyond. Not affiliated with any marketplace.</p>
       <a class="footer-all" href="/#tools">Browse all ${tools.length} tools ${icon('arrow', 'ic ic-sm')}</a>
