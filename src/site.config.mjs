@@ -25,6 +25,8 @@ export const site = {
     '0T2yBm7gkq2AgVANM2Zgf86eXc-gryrgYyfaAGoxNYY',
     'iwLFGhMPanm5zXVnMf57TQO2Lor5GKrR9kYaoaEt7P0',
   ],
+  // Bing Webmaster Tools verification, same idea. Empty until a token is issued.
+  bingSiteVerification: '',
 };
 
 // ─── Analytics ────────────────────────────────────────────────────────────
@@ -57,6 +59,16 @@ export const consentRequiredFor = ['ga4'];
 // beacon arrives whatever we configure here, and the CSP has to allow it or the browser
 // blocks it on every page view. Set to '' if you turn Web Analytics off in the dashboard.
 export const edgeAnalytics = 'cloudflare-edge';
+
+// ─── IndexNow ─────────────────────────────────────────────────────────────
+// Bing's webmaster guidelines name IndexNow in four separate sections as the way to
+// get added, changed and deleted URLs noticed quickly. The key is public by design:
+// search engines verify ownership by fetching <key>.txt from the site root, so the
+// build publishes that file and this value is not a secret.
+export const indexNow = {
+  key: 'c1e8f9bbd02dd623da1c4b83c996aeb8',
+  endpoint: 'https://api.indexnow.org/indexnow',
+};
 
 // ─── Marketplace logos shown in the rotating hero slot ────────────────────
 // Order = rotation order. A brand gets an image when logos/<slug>.(png|webp|jpg)

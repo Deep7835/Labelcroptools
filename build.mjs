@@ -8,7 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { site, categories, brands, brandRotateMs, analytics, consentRequiredFor, edgeAnalytics } from './src/site.config.mjs';
+import { site, categories, brands, brandRotateMs, analytics, consentRequiredFor, edgeAnalytics, indexNow } from './src/site.config.mjs';
 import { tools } from './src/tools.mjs';
 import { sprite, icon } from './src/icons.mjs';
 import { blog, marketplaces } from './src/blog.mjs';
@@ -245,7 +245,7 @@ const head = ({ title, description, url, ogImage, extraLd = [], noindex = false,
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-${[].concat(site.googleSiteVerification || []).map(t => `<meta name="google-site-verification" content="${esc(t)}">\n`).join('')}<meta name="robots" content="${noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'}">
+${[].concat(site.googleSiteVerification || []).map(t => `<meta name="google-site-verification" content="${esc(t)}">\n`).join('')}${site.bingSiteVerification ? `<meta name="msvalidate.01" content="${esc(site.bingSiteVerification)}">\n` : ''}<meta name="robots" content="${noindex ? 'noindex,nofollow' : 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1'}">
 <link rel="canonical" href="${abs(url)}">
 <link rel="alternate" hreflang="en-IN" href="${abs(url)}">
 <link rel="alternate" hreflang="en" href="${abs(url)}">
@@ -963,6 +963,7 @@ ${urls.map((u) => `  <url><loc>${abs(u.loc)}</loc><lastmod>${u.lastmod}</lastmod
 // Build-time manifests are consumed by the Python generators and have no business
 // being served; .assetsignore keeps them (and macOS cruft) out of the upload.
 write('.assetsignore', `og-manifest.json\ncover-manifest.json\n**/.DS_Store\n`);
+if (indexNow?.key) write(`${indexNow.key}.txt`, indexNow.key);
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /404\n\nSitemap: ${abs('/sitemap.xml')}\n`);
 write('manifest.webmanifest', JSON.stringify({
   name: `${site.name} – ${site.tagline}`, short_name: site.shortName, description: site.description, start_url: '/?source=pwa', scope: '/', display: 'standalone',

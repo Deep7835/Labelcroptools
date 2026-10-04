@@ -230,6 +230,22 @@ edge, so no Worker invocations are billed. Three settings are deliberate:
 line — this site uses 6 rules and a 409-char maximum). `dist/.assetsignore` keeps the build-time
 `og-manifest.json` and `cover-manifest.json` out of the upload.
 
+### IndexNow
+
+Bing's webmaster guidelines name IndexNow in four separate sections as the way to get
+added, changed and deleted URLs noticed quickly, and it also feeds Yandex, Naver and
+Seznam. `npm run deploy` submits automatically after a successful `wrangler deploy`;
+`npm run indexnow` runs it on its own, with `--all` to resubmit everything and `--dry`
+to preview.
+
+Ownership is proved by a key file published at the site root, so the key in
+`src/site.config.mjs` is public by design, not a secret.
+
+The submitter hashes every built page and compares against `indexnow-state.json`, so
+only URLs whose content actually changed are sent. That is deliberate: the guidelines
+say to avoid batch submissions, and resubmitting every URL on every deploy is what
+earns a 429. Commit `indexnow-state.json` so the comparison survives across machines.
+
 ### www redirect
 
 `www.labelcroptools.com` is served by a second, separate Worker in `workers/www-redirect/`
