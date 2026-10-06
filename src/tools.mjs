@@ -112,7 +112,7 @@ export const tools = [
     category: 'label-tools',
     name: 'Meesho Label Cropper',
     h1: 'Meesho Label Cropper',
-    title: 'Meesho Label Cropper – Crop Shipping Labels Free, No Upload',
+    title: 'Meesho Label Cropper – Crop Label PDF Online, Free 4x6/A4',
     description:
       'Crop Meesho shipping label PDFs in seconds: remove the tax invoice, sort by SKU or courier, and print on thermal 4x6 or A4 (4 per sheet). Free, unlimited, runs in your browser.',
     tagline: 'Trim Meesho label PDFs to just the shipping label, sort by SKU or courier, and download a print-ready file — free, no signup, nothing uploaded.',
@@ -140,6 +140,10 @@ export const tools = [
     features: cropperFeatures('Meesho'),
     faq: [
       {
+        q: 'How do I crop PDF labels from Meesho in bulk?',
+        a: 'Drop the whole download in at once. Every page is read and cropped in a single pass, so a 300 order file takes about as long as a small one, and the pages come out in whatever sort order you picked.',
+      },
+      {
         q: 'How do I crop a Meesho label PDF without the invoice?',
         a: 'Upload the label PDF, keep “Without invoice” selected, choose your printer layout and click Crop & download. The tool detects the TAX INVOICE heading on each page and keeps only the label block above it.',
       },
@@ -152,6 +156,18 @@ export const tools = [
         a: 'Yes. The Qty printed in the product table is read for every label. Sort by “Qty (multi-qty first)” to pack multi-unit orders first, and switch on the SKU & Qty stamp so quantities are impossible to miss.',
       },
       ...cropperFaqCommon('Meesho'),
+      {
+        q: 'Is a Meesho label cutter the same as a label cropper?',
+        a: 'Yes. Cutter, cropper, crop tool and label resizer all describe the same job: taking the shipping label out of the downloaded PDF and dropping the tax invoice. The wording differs between sellers, the task does not.',
+      },
+      {
+        q: 'Can I crop a Meesho label PDF online without installing anything?',
+        a: 'Yes. This runs in your browser, so there is nothing to install and the PDF is never uploaded. It also keeps working offline once the page has loaded, which helps if your connection drops mid-dispatch.',
+      },
+      {
+        q: 'Does it output 4x6 thermal labels?',
+        a: 'Yes. Choose the label printer output and each label is fitted to 4x6 in (101.6 x 152.4 mm), the standard courier label size. Choose A4 instead to place two or four labels per sheet on a normal printer.',
+      },
       {
         q: 'Is this an official Meesho tool?',
         a: 'No. It is an independent, free utility built for suppliers. It only processes the PDF you choose; it does not connect to your Meesho account.',
@@ -166,7 +182,7 @@ export const tools = [
     category: 'label-tools',
     name: 'Flipkart Label Cropper',
     h1: 'Flipkart Label Cropper',
-    title: 'Flipkart Label Cropper – Crop Shipping Labels Online Free',
+    title: 'Flipkart Label Cropper – Crop Label PDF Online, Free 4x6/A4',
     description:
       'Crop Flipkart shipping label PDFs: keep or remove the invoice, sort by SKU, and print on thermal 4x6 or A4 with 2 or 4 labels per sheet. Free, no upload, no signup.',
     tagline: 'Cut Flipkart label PDFs down to the label, with or without the tax invoice, sorted and ready for your thermal or A4 printer.',
@@ -193,6 +209,18 @@ export const tools = [
     features: cropperFeatures('Flipkart'),
     faq: [
       {
+        q: 'Is a Flipkart label cutter the same as a label cropper?',
+        a: 'Yes. Cutter, cropper, crop tool and label resizer are all names for the same job: pulling the Ekart shipping label out of the downloaded PDF and leaving the invoice behind.',
+      },
+      {
+        q: 'Can I crop a Flipkart label PDF online without installing software?',
+        a: 'Yes. Everything runs in your browser, so nothing is installed and the PDF never leaves your device. That matters here because Flipkart labels carry customer names, addresses and phone numbers.',
+      },
+      {
+        q: 'Does it produce 4x6 thermal labels?',
+        a: 'Yes. Pick the label printer output and each label is fitted to 4x6 in (101.6 x 152.4 mm). Pick A4 to arrange two or four labels per sheet for a normal laser or inkjet printer.',
+      },
+      {
         q: 'How do I crop a Flipkart label to A4 with 4 labels per page?',
         a: 'Upload the label PDF, select Without invoice (or With invoice), choose “A4 · 4 per sheet” and click Crop & download. Each A4 page carries four labels with a light cut border.',
       },
@@ -215,7 +243,7 @@ export const tools = [
     category: 'label-tools',
     name: 'Amazon Label Cropper',
     h1: 'Amazon Label Cropper (Easy Ship & Self Ship)',
-    title: 'Amazon Label Cropper – Crop Amazon Easy Ship Labels to 4x6 Free',
+    title: 'Amazon Label Cropper – Crop Easy Ship Label PDF to 4x6 Free',
     description:
       'Crop Amazon Easy Ship and Self Ship label PDFs to 4x6 thermal size or A4 sheets, drop invoice pages, and sort by SKU. Free, unlimited, processed in your browser.',
     tagline: 'Turn Amazon.in Easy Ship label PDFs into clean 4 × 6 labels or A4 sheets, without the invoice pages you don’t want to print.',
@@ -242,6 +270,18 @@ export const tools = [
     features: cropperFeatures('Amazon'),
     faq: [
       {
+        q: 'Is an Amazon label cutter the same as a label cropper?',
+        a: 'Yes, they describe the same job. Cutter, cropper and label resizer all mean taking the Easy Ship label out of the page and dropping the invoice pages that came with it.',
+      },
+      {
+        q: 'Can I crop an Amazon label PDF online for free?',
+        a: 'Yes, with no signup and no upload. The file is read in your browser, so a label PDF containing customer addresses is never sent anywhere.',
+      },
+      {
+        q: 'Does it crop Amazon labels to 4x6?',
+        a: 'Yes. Easy Ship labels are cropped to a true 4x6 in (101.6 x 152.4 mm) block, which is the standard courier label size, so they print at full size on thermal stock.',
+      },
+      {
         q: 'Will the Amazon barcode still scan after cropping?',
         a: 'Yes. The tool crops by changing the page’s visible area rather than rasterising it, so the barcode remains an exact vector graphic and prints at full quality.',
       },
@@ -264,7 +304,7 @@ export const tools = [
     category: 'label-tools',
     name: 'Universal Label Cropper',
     h1: 'Universal Shipping Label Cropper',
-    title: 'Shipping Label Cropper – Auto-Detects Meesho, Flipkart, Amazon',
+    title: 'Shipping Label Cropper – Crop Any Label PDF Online Free',
     description:
       'One label cropper for every marketplace. Drop any shipping label PDF and it auto-detects Meesho, Flipkart or Amazon formats, crops to the label, and exports thermal or A4 output. Free.',
     tagline: 'Not sure which marketplace a file came from? Drop it here — the format is detected automatically and cropped the right way.',
@@ -291,6 +331,18 @@ export const tools = [
     ],
     features: cropperFeatures('marketplace'),
     faq: [
+      {
+        q: 'Is this a label cutter or a label cropper?',
+        a: 'Both words describe this tool. Sellers say cutter, cropper, crop tool and label resizer interchangeably; all of them mean separating the courier label from the rest of the page.',
+      },
+      {
+        q: 'Can I crop any shipping label PDF online?',
+        a: 'Yes. Drop in a PDF from Meesho, Flipkart or Amazon and the format is detected automatically. For a courier format it does not recognise, the manual PDF Crop tool lets you draw the box yourself.',
+      },
+      {
+        q: 'Does it support 4x6 thermal and A4 output?',
+        a: 'Yes. Choose 4x6 in (101.6 x 152.4 mm) for thermal label stock, or A4 to place two or four cropped labels on a single sheet for a normal printer.',
+      },
       {
         q: 'How does auto-detection work?',
         a: 'Each page’s text is scored against marketplace fingerprints — phrases such as “Customer Address” and “If undelivered, return to” for Meesho, Ekart and Seller Hub markers for Flipkart, and Easy Ship / amazon.in markers for Amazon. The highest score wins; a low score triggers content-based cropping.',
