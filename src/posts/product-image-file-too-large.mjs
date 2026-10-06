@@ -24,6 +24,20 @@ You have got the photo right. Good light, clean background, product filling the 
 
 Do not worry, this is one of the most common issues sellers hit, and it is nearly always fixable in under a minute. A product image file size too large to upload almost never means you need to reshoot. It means the file carries far more data than a listing page will ever use.
 
+## Quick answers
+
+### Why is my product image file size too large to upload?
+
+The photo almost certainly came straight off a phone camera at 12 megapixels or more, roughly 4000 x 3000 pixels. A listing displays it at around 1000 x 1000, so you are uploading about twelve times more data than the page will ever use.
+
+### How do I reduce a product image file size without losing quality?
+
+Resize the dimensions first, then compress. Shrinking the pixel count removes most of the data, so the compressor reaches your target size at a gentler quality setting and the visible result stays sharp.
+
+### What file size do marketplaces accept?
+
+Limits differ by platform and change, so check your seller panel. In practice an image resized for listing use and saved at quality 80 lands far under any common limit.
+
 ## Why your product image file size is too large to upload
 
 Here is the thing most people miss. A modern phone camera shoots at 12 megapixels or more, which is roughly 4000 x 3000 pixels.

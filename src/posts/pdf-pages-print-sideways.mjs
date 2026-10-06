@@ -24,6 +24,20 @@ A seller messaged me a photo of a print run where every second page came out on 
 
 Do not worry, this is one of the most common PDF issues there is, and nothing about your file is broken. If your PDF pages print sideways after you have already turned them, you have hit a genuine gap between what you see and what the file says.
 
+## Quick answers
+
+### Why do my PDF pages print sideways after I rotated them?
+
+Most viewers rotate your view only. That setting is not written into the file, so the printer still reads the original orientation stored on each page and prints it the way the document says, not the way your screen showed it.
+
+### How do I rotate PDF pages permanently?
+
+Use a tool that writes the rotation into the document and saves a new file. The test is simple: close everything, reopen the saved file, and it should already be upright before you touch any view control.
+
+### Why is only part of my document sideways?
+
+Almost always a document feeder. It stores whatever orientation each sheet went in at, so a few pages end up rotated while their neighbours are fine. Rotate just those pages rather than the whole file.
+
 ## Why your PDF pages print sideways
 
 Let me explain the difference, because it is the whole answer.

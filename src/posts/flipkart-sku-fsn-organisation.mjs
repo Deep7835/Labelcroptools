@@ -1,12 +1,12 @@
 export default {
   slug: 'flipkart-sku-id-fsn-organisation',
   marketplace: 'flipkart',
-  keyword: 'Flipkart SKU ID and FSN',
+  keyword: 'what is seller SKU ID in Flipkart',
   type: 'Type 3 — Informational / Educational',
   sentiment: '0.55 to 0.75 · Curious + Warm + Trustworthy',
-  title: 'Flipkart SKU ID vs FSN: What They Are and How to Name SKUs Properly',
-  metaTitle: 'Flipkart SKU ID vs FSN — And How to Name SKUs Properly',
-  description: 'SKU ID and FSN do different jobs on Flipkart. Here is what each one means, who controls it, and a naming system that keeps picking accurate as your catalog grows.',
+  title: 'What Is Seller SKU ID in Flipkart, and How Is It Different from FSN?',
+  metaTitle: 'Seller SKU ID in Flipkart: What It Is, vs FSN',
+  description: 'Seller SKU ID in Flipkart is the code you create; FSN is the one Flipkart assigns. What each means, the FSN full form, and how to name SKUs that stay usable.',
   excerpt: 'One of these you control, one you do not. Getting the difference right (and naming your SKUs properly) is what keeps picking accurate past 50 products.',
   published: '2026-09-21',
   updated: '2026-09-21',
@@ -25,6 +25,28 @@ A seller asked me to help work out why his picking kept going wrong. He had 180 
 Nothing was broken technically. Every listing was live. But no human could look at a label and know which shelf to walk to.
 
 Here is something most people do not realise until it starts hurting: SKU naming is not admin work, it is operations infrastructure. Let me explain the two identifiers first, because people mix them up constantly.
+
+## What is seller SKU ID in Flipkart, and what is FSN?
+
+### What is seller SKU ID in Flipkart?
+
+The seller SKU ID is the product code you create yourself. You choose the format, you can change it, and Flipkart simply stores it against your listing. It exists so you can recognise one exact variant of your own stock, on your own shelf.
+
+### What is the FSN full form in Flipkart?
+
+FSN stands for Flipkart Serial Number. It is the identifier Flipkart assigns to a product listing on its own catalogue. You do not create it and you cannot edit it. Every listing of the same catalogue product shares the same FSN, whoever is selling it.
+
+### Is FSN the same as a serial number?
+
+Not in the way most people mean. FSN identifies a product listing, not an individual physical unit. Two identical shirts shipped to two customers carry the same FSN. A manufacturer serial number identifies one item; an FSN identifies one catalogue entry.
+
+### What is FSN in an invoice?
+
+On a Flipkart invoice the FSN identifies which catalogue product the line refers to. It is useful when reconciling, because it stays constant even if you later rename your own seller SKU ID.
+
+### How do I find the seller SKU ID in Flipkart?
+
+It appears against each listing in your seller panel, and it prints on the shipping label block for the order. Reading it off the label is usually faster than looking it up, which is exactly why a readable naming system pays off.
 
 ## Flipkart SKU ID and FSN do different jobs
 

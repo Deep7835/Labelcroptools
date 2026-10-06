@@ -35,10 +35,19 @@ const fileFor = (url) => {
   const p = new URL(url).pathname;
   return path.join(DIST, p.endsWith('/') ? p + 'index.html' : p);
 };
+// Every page embeds the build id and ?v= asset cache-busters, both of which change on
+// every build even when nothing was edited. Hashing the raw bytes therefore reported
+// 100% of URLs as changed every time, which defeats the point and is what earns a 429.
+// Strip that per-build noise so the hash reflects content a reader would notice.
+const normalise = (buf) => buf.toString('utf8')
+  .replace(/\?v=[a-f0-9]+/g, '')          // asset cache-busters
+  .replace(/build:"[a-f0-9]+"/g, '')      // build id in the inline site script
+  .replace(/'sha256-[A-Za-z0-9+/=]+'/g, ''); // CSP hash of that script, so it moves too
+
 const hashes = {};
 for (const u of urls) {
   const f = fileFor(u);
-  if (fs.existsSync(f)) hashes[u] = crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex').slice(0, 16);
+  if (fs.existsSync(f)) hashes[u] = crypto.createHash('sha256').update(normalise(fs.readFileSync(f))).digest('hex').slice(0, 16);
 }
 
 const prev = fs.existsSync(STATE) ? JSON.parse(fs.readFileSync(STATE, 'utf8')) : {};
@@ -72,7 +81,17 @@ const res = await fetch(indexNow.endpoint, {
 });
 // 200 accepted, 202 accepted with key validation still pending. Both are successes.
 const ok = res.status === 200 || res.status === 202;
-console.log(`indexnow: ${res.status} ${res.statusText}${ok ? '' : ' — ' + (await res.text()).slice(0, 200)}`);
-if (!ok) process.exit(1);
+const body = ok ? '' : await res.text();
+console.log(`indexnow: ${res.status} ${res.statusText}${ok ? '' : ' ' + body.slice(0, 200)}`);
+if (!ok) {
+  // The engine can still be validating a freshly published key file. That is pending on
+  // their side, not a fault here, so do not fail the deploy and do not record state:
+  // leaving state unwritten means the next run retries these URLs.
+  if (res.status === 403 && body.includes('SiteVerificationNotCompleted')) {
+    console.log('indexnow: key verification still pending at the engine, will retry on the next deploy');
+    process.exit(0);
+  }
+  process.exit(1);
+}
 fs.writeFileSync(STATE, JSON.stringify(hashes, null, 2) + '\n');
 console.log(`indexnow: state written for ${Object.keys(hashes).length} URL(s)`);

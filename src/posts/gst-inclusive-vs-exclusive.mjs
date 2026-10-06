@@ -5,7 +5,7 @@ export default {
   type: 'Type 1 — Comparison',
   sentiment: '0.65 to 0.85 · Positive + Empowering',
   title: 'GST Inclusive vs Exclusive Price: Which One Are You Actually Quoting?',
-  metaTitle: 'GST Inclusive vs Exclusive Price: Know Which You Quote',
+  metaTitle: 'What Does Exclusive of GST Mean? Inclusive vs Excl.',
   description: 'GST inclusive vs exclusive price, explained with real numbers. Both are correct in the right place. Here is which to quote, and the reverse formula.',
   excerpt: 'Both ways of quoting a price are perfectly correct. Mixing them up on a single order is what quietly costs you the tax amount out of your own margin.',
   published: '2026-09-23',
@@ -25,6 +25,20 @@ A seller once showed me two quotes he had sent the same week, for the same item,
 He had not made a mistake in either. He had just quoted one exclusive and one inclusive, without saying which. Understanding GST inclusive vs exclusive price is one of those small things that stops a whole category of confusion.
 
 Both are completely correct ways to state a price. They simply measure the sale at different points.
+
+## Quick answers
+
+### What does exclusive of GST mean?
+
+It means the tax is not in the number yet. A price quoted exclusive of GST is the base value, and the tax gets added on top at billing. Rs. 1,000 exclusive at 18 percent becomes Rs. 1,180 for the buyer.
+
+### What does inclusive of GST mean?
+
+The tax is already inside the figure. Nothing gets added at checkout, so Rs. 1,180 inclusive is what the customer pays, of which Rs. 180 is tax and Rs. 1,000 is your base value.
+
+### How do I remove GST from an inclusive price?
+
+Divide by 1 plus the rate, so 1.18 at 18 percent. Do not subtract 18 percent: that gives Rs. 967.60 instead of the correct Rs. 1,000, an error on every single unit.
 
 ## What the two phrases actually mean
 

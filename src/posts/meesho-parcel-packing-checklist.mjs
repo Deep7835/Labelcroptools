@@ -26,6 +26,20 @@ The orders that came back later were not random either. They clustered around th
 
 Here is a checklist you can actually pin above the table. Eight items, ordered by how much difference each one makes.
 
+## Quick answers
+
+### What should go inside a Meesho parcel?
+
+The product, the packing slip or invoice as your account requires, and enough protection that the item survives handling. Nothing promotional that breaches marketplace policy, and nothing that contradicts what the customer ordered.
+
+### Does the Meesho label go inside or outside?
+
+The shipping label goes on the outside where the courier reads it. Paperwork that needs to reach the customer goes inside. Those are two separate jobs, which is why cropping the label for printing does not change your invoicing duties.
+
+### How do I stop parcels being rejected at pickup?
+
+Most rejections come from a label that will not scan or a parcel whose dimensions do not match what was booked. Print labels at Actual size and measure the packed parcel before booking.
+
 ## 1. The label, cropped and sorted before you start
 
 This one makes a bigger difference than most people realise, because it changes the shape of the whole session.

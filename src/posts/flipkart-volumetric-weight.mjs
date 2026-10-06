@@ -26,6 +26,20 @@ Nothing was wrong with his account. He was shipping a light item in a big box, a
 
 Don't worry, this is one of the most common surprises in e-commerce shipping, and the fix is simpler than you would expect. Let me show you the maths first, because once you see it you cannot unsee it.
 
+## Quick answers
+
+### How is volumetric weight calculated?
+
+Length times width times height in centimetres, divided by a divisor the courier sets, commonly 5000 in India. A 30 x 25 x 20 cm box works out at 15,000 divided by 5000, which is 3 kg regardless of what the scale says.
+
+### Why is my Flipkart shipping fee higher than the item weight?
+
+Because you are billed on the greater of actual weight and volumetric weight. A light item in a large box is charged for the space it occupies, since that is what the courier actually runs out of.
+
+### How do I reduce volumetric weight?
+
+Reduce the largest dimension first. The three measurements multiply, so taking 2 cm off each side of that same box drops it from 3 kg to about 2.32 kg without touching the product.
+
 ## Why Flipkart shipping fees follow volumetric weight, not just scale weight
 
 A delivery van has a fixed volume. A parcel that weighs nothing but fills a quarter of the van costs the courier the same as a dense parcel that fills the same space.

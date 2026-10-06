@@ -5,7 +5,7 @@ export default {
   type: 'Type 5 — Problem / Solution',
   sentiment: '0.60 to 0.80 · Reassuring + Solution-focused',
   title: 'Amazon Label Printing Too Small? Here Is What Is Actually Happening',
-  metaTitle: 'Amazon Label Printing Too Small? The Real Fix',
+  metaTitle: 'Amazon Label or Return Label Printing Too Small?',
   description: 'Amazon label printing too small is almost always double scaling, not a broken file. Here is the arithmetic behind it and the three settings that fix it.',
   excerpt: 'A label that comes out at half size has usually been scaled twice, once by the tool and once by the printer driver. The fix is to let only one of them do it.',
   published: '2026-09-23',
@@ -23,6 +23,20 @@ export default {
 A seller sent me a photo of his printouts last month. The Amazon Easy Ship label was sitting in the middle of a 4 x 6 inch sticker, taking up maybe half of it, with white space all around.
 
 He was convinced the download was faulty. It was not. If your Amazon label printing too small is the problem you are hitting, the file is almost certainly fine and the fix takes one setting. Do not worry, this is one of the most common printing issues sellers run into.
+
+## Quick answers
+
+### Why is my Amazon return label printing too small?
+
+Same cause as a shipping label: the page is being scaled twice. A return label arrives as an A4 page, and fitting that to 4 x 6 inch stock shrinks everything to roughly 48 percent. Crop to the label first, then print at Actual size.
+
+### What size should an Amazon label print at?
+
+A correct label block measures about 101.6 x 152.4 mm (4 x 6 in). Measure one printed label with a ruler. If it comes out noticeably smaller, a scaling setting is switched on somewhere in the chain.
+
+### Will a shrunken barcode still scan?
+
+Down to small reductions, usually yes, because scanners read bar width ratios rather than absolute size. Around half size the narrow bars get too thin to read reliably and scans start failing intermittently, which is worse than failing outright.
 
 ## Why your Amazon label is printing too small
 

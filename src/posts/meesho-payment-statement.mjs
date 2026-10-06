@@ -5,7 +5,7 @@ export default {
   type: 'Type 3 — Informational / Educational',
   sentiment: '0.55 to 0.75 · Curious + Warm + Trustworthy',
   title: 'How to Read Your Meesho Payment Statement (Line by Line)',
-  metaTitle: 'Meesho Payment Statement Explained, Line by Line',
+  metaTitle: 'Meesho Payment Statement: Every Line Explained',
   description: 'Your Meesho payment statement explains exactly why the amount in your bank is lower than your order value. Here is what each deduction means and how to reconcile it.',
   excerpt: 'The number that lands in your bank is never the number on your orders page. Here is what every line on a Meesho payment statement actually means.',
   published: '2026-09-20',
@@ -25,6 +25,20 @@ A seller once messaged me a screenshot with one line highlighted: "Order value R
 Nothing had gone wrong. Every rupee was explained on his statement. He had just never been shown how to read it.
 
 Here is something most new suppliers do not realise: the Meesho payment statement is not a bill, it is an audit trail. Once you can read it, it becomes the most useful document in your business.
+
+## Quick answers
+
+### What does original payment source mean in Meesho?
+
+It is the route the money took back to the customer on a return or cancellation, rather than a charge to you. If a customer paid online, a refund to the original payment source means it went back to that same card, UPI ID or wallet, not to a Meesho balance.
+
+### Does original payment source affect my payout?
+
+Not directly. It describes how the customer was refunded. What touches your payout is the return itself and any associated shipping or handling, which appear as their own lines on the statement.
+
+### What counts as Meesho payment proof?
+
+The payment statement itself is the record. Download it for the relevant cycle, since it ties each order to the amount settled and the deductions applied, which a bank credit alone does not show.
 
 ## Start with the two numbers that are never equal
 

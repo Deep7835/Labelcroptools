@@ -5,7 +5,7 @@ export default {
   type: 'Type 2 — How-To / Guide',
   sentiment: '0.70 to 0.90 · Encouraging + Confidence-building',
   title: 'How to Print 4 Shipping Labels on One A4 Sheet Without Wasting Paper',
-  metaTitle: 'Print 4 Shipping Labels on One A4 Sheet: Step by Step',
+  metaTitle: 'How to Print 4 Labels Per Sheet on One A4 Page',
   description: 'Print 4 shipping labels on one A4 sheet with a normal printer. The exact steps, the 7.8 mm sizing catch nobody mentions, and when 2-up beats 4-up.',
   excerpt: 'Four labels per A4 cuts your paper use by 75 percent. There is one sizing detail that trips people up, and it takes about ten seconds to get right.',
   published: '2026-09-23',
@@ -23,6 +23,20 @@ export default {
 Last month I watched a seller print sixty orders for the day. Sixty A4 sheets went into the tray, sixty came out, and he cut a small label off the top of each one. The rest went straight into a bin beside the table.
 
 That bin is the whole problem. Here is the good news: you can print 4 shipping labels on one A4 sheet with the printer you already own, and it takes about two minutes to set up the first time.
+
+## Quick answers
+
+### How do I print 4 labels per sheet?
+
+Crop each page down to the label block first, then arrange four in a 2 by 2 grid on one A4 sheet. You will need about a 97 percent scale, because four true 4 x 6 inch labels are around 7.8 mm taller than A4 allows.
+
+### Can I fit 4 labels in one page without shrinking them?
+
+Not at full size. Two labels across measures 203.2 mm and fits inside A4's 210 mm width comfortably, but two down measures 304.8 mm against A4's 297 mm height. Two per sheet needs no scaling at all.
+
+### Does resizing a label stop it scanning?
+
+A 3 percent reduction on a 600 dpi laser print leaves bar widths well above what couriers need. Problems start well below that, so print one and scan it before committing to a batch.
 
 ## Why one label per page wastes so much
 

@@ -5,7 +5,7 @@ export default {
   type: 'Type 5 — Problem / Solution',
   sentiment: '0.60 to 0.80 · Reassuring + Solution-focused',
   title: 'Meesho Catalog Image Rejected? Here Is What to Check First',
-  metaTitle: 'Meesho Catalog Image Rejected — Quick Fixes That Work',
+  metaTitle: 'Meesho Image Rejected? Fixes That Actually Work',
   description: 'Most Meesho catalog image rejections come down to five fixable things: size, background, borders, text overlays and file weight. Here is how to fix each.',
   excerpt: 'Image rejections feel random until you know what the checks are looking for. Five things cause almost all of them, and each takes minutes to fix.',
   published: '2026-09-19',
@@ -25,6 +25,20 @@ A seller sent me eleven catalog uploads that had all been rejected. He was convi
 Don't worry, this is one of the most common issues for new suppliers, and the fix took him about fifteen minutes for the whole batch.
 
 Here is exactly what to check, in the order that catches the most problems fastest.
+
+## Quick answers
+
+### What does "product is disabled due to mismatch between image and description" mean?
+
+Meesho is saying the photo and the written listing do not describe the same thing. It usually means the image shows a different colour, a different variant, extra items not mentioned, or text on the image that contradicts the description.
+
+### How do I fix a mismatch between image and description?
+
+Change whichever one is wrong, not both. Decide what you are actually selling, then make the main image show exactly that and the description state exactly that. Remove bundled props from the photo if they are not included in the price.
+
+### How long does it take to go live again after fixing?
+
+Resubmit the corrected catalogue and wait for the next review pass rather than editing repeatedly. Repeated edits restart the queue, which is the most common reason a fix seems to take days.
 
 ## Check 1: resolution, the reason most Meesho catalog images get rejected
 
