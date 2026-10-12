@@ -109,10 +109,58 @@
       }
       if (rows.length) return rows;
     }
+    // Flipkart prints the header as one "SKU ID | Description" item and each row as
+    // "1 carx8 | Car Posters Set of 8 A4 Size 1", so the column matcher above never sees it.
+    const fh = inRegion.findIndex((l) => /sku\s*id\s*\|\s*description/i.test(l.text));
+    if (fh >= 0) {
+      const rows = [];
+      for (const l of inRegion.slice(fh + 1, fh + 13)) {
+        const m = l.text.match(/^\d{1,2}\s+(\S+)\s*\|\s*(.+?)\s+(\d{1,4})$/);
+        if (!m) break;
+        rows.push({ sku: m[1], desc: m[2], qty: m[3] });
+      }
+      if (rows.length) return rows;
+    }
     // Inline "SKU: value" fallback
     const m = lines.map((l) => l.text).join('\n').match(/sku(?:\s*id)?\s*[:\-]\s*([^\s|]+)/i);
     const q = lines.map((l) => l.text).join('\n').match(/qty(?:\s*\.)?\s*[:\-]?\s*(\d+)/i);
     return m ? [{ sku: m[1], qty: q ? q[1] : '1' }] : [];
+  };
+
+  // Product names from an invoice "Description | HSN | Qty …" table, one per item. Meesho
+  // prints the name only here, wrapped over several lines, followed by an "Other Charges" row.
+  const invoiceNames = (lines) => {
+    const hi = lines.findIndex((l) => l.items.some((i) => /^description$/i.test(i.s.trim())) && l.items.some((i) => /^hsn/i.test(i.s.trim())));
+    if (hi < 0) return [];
+    const hsnX = lines[hi].items.find((i) => /^hsn/i.test(i.s.trim())).x;
+    const segs = [];
+    for (const l of lines.slice(hi + 1)) {
+      if (/^total\b/i.test(l.text)) break;
+      const s = l.items.filter((i) => i.x < hsnX - 2).map((i) => i.s).join(' ').replace(/\s+/g, ' ').trim();
+      if (s) segs.push({ y: l.y, s });
+    }
+    // A new item starts after a gap clearly wider than the normal wrapped-line spacing.
+    const gaps = segs.slice(1).map((g, i) => segs[i].y - g.y);
+    const step = gaps.length > 1 ? Math.min(...gaps) : Infinity;
+    const blocks = [];
+    segs.forEach((g, i) => {
+      if (!i || /^other charges/i.test(g.s) || gaps[i - 1] > step * 1.5) blocks.push([]);
+      blocks[blocks.length - 1].push(g.s);
+    });
+    return blocks.map((b) => b.join(' ')).filter((s) => !/^other charges/i.test(s));
+  };
+  // Amazon invoices print "Product title | B0XXXXXXXX ( SKU )"; read the title for one SKU.
+  const invoiceNameForSku = (lines, sku) => {
+    const re = new RegExp(`\\(\\s*${sku.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\)`);
+    const at = lines.findIndex((l) => re.test(l.text));
+    if (at < 0) return '';
+    const parts = [lines[at].text.split(re)[0]];
+    for (let k = at - 1; k >= Math.max(0, at - 3); k--) {
+      const t = lines[k].text;
+      if (/description|unit price|\d+\.\d{2}|\(\s*\S+\s*\)/i.test(t)) break;
+      parts.unshift(t);
+    }
+    return parts.join(' ').replace(/^\s*\d{1,2}\s+/, '').replace(/\|?\s*B0[A-Z0-9]{8}\s*$/, '').replace(/[\s|]+$/, '').replace(/\s+/g, ' ').trim();
   };
 
   // Analyse one page → crop boxes + metadata.
@@ -140,9 +188,16 @@
     if (!labelBox && !isInvoicePage) labelBox = fullBox;
     const region = labelBox || fullBox;
     const rows = extractTable(t.lines, { y0: region.y0, y1: region.y1 });
+    if (rows.length && rows.every((r) => !r.desc)) {
+      const names = invoiceNames(t.lines);
+      // Only trust a one-to-one match; a guessed name on the wrong SKU is worse than none.
+      if (names.length === rows.length) rows.forEach((r, i) => {
+        r.desc = r.size ? names[i].replace(new RegExp(`\\s+-\\s+${r.size.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i'), '') : names[i];
+      });
+    }
     const labelText = t.lines.filter((l) => l.y >= region.y0).map((l) => l.text).join('\n');
     const orderNo = (labelText.match(/order\s*(?:no\.?|id|number)?\s*[:#]?\s*([0-9][0-9_\-]{6,})/i) || [])[1] || (rows[0] && rows[0].order) || '';
-    return { num, market, isInvoicePage, labelBox, fullBox, rows, sku: rows[0]?.sku || '', qty: parseInt(rows[0]?.qty || '1', 10) || 1, size: rows[0]?.size || '', color: rows[0]?.color || '', desc: rows[0]?.desc || '', courier: detectCourier(labelText), orderNo, rotate: t.rotate };
+    return { num, market, isInvoicePage, labelBox, fullBox, rows, sku: rows[0]?.sku || '', qty: parseInt(rows[0]?.qty || '1', 10) || 1, size: rows[0]?.size || '', color: rows[0]?.color || '', desc: rows[0]?.desc || '', courier: detectCourier(labelText), orderNo, rotate: t.rotate, invoiceLines: isInvoicePage ? t.lines : null };
   };
 
   // ── pdf-lib builders ─────────────────────────────────────────────────
@@ -321,5 +376,5 @@
     container.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); onRemove?.(+b.dataset.rm); }));
   };
 
-  Object.assign(S, { lib, loadLibs, mm2pt, pt2mm, PAPER, readFile, openPdf, renderPage, pageText, detectMarket, detectCourier, analyzePage, buildLabels, nup, renderThumbs, fileList });
+  Object.assign(S, { lib, loadLibs, mm2pt, pt2mm, PAPER, readFile, openPdf, renderPage, pageText, detectMarket, detectCourier, analyzePage, invoiceNameForSku, buildLabels, nup, renderThumbs, fileList });
 })();

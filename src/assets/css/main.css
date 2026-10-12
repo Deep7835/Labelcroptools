@@ -470,6 +470,8 @@ progress { width: 100%; height: 10px; accent-color: var(--ink); }
 .tbl .r { text-align: right; font-variant-numeric: tabular-nums; }
 .tbl tr.picked td { opacity: .45; text-decoration: line-through; }
 .tbl td input[type="text"], .tbl td input[type="number"] { padding: 6px 8px; font-size: .9rem; }
+.tbl .pname input { width: 100%; min-width: 220px; }
+.tbl .pn-print { display: none; }
 .tablewrap { margin-top: 18px; overflow: auto; }
 .table-tools { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
 .table-tools input { width: 320px; max-width: 100%; }
@@ -602,6 +604,8 @@ progress { width: 100%; height: 10px; accent-color: var(--ink); }
   .ticket { border: 0; box-shadow: none; padding: 0; }
   .tbl th { position: static; background: #eee; color: #000; }
   .tbl td, .tbl th { border: 1px solid #999; padding: 6px; }
+  .tbl .pname input { display: none; }
+  .tbl .pn-print { display: inline; }
   .stats { display: flex; gap: 12px; }
   .stat { border: 1px solid #000; box-shadow: none; }
 }

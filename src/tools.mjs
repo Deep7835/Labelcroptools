@@ -377,14 +377,14 @@ export const tools = [
   <div class="stats" id="stats" hidden></div>
   <div class="tablewrap" id="tablewrap" hidden>
     <div class="table-tools">
-      <input type="search" id="q" placeholder="Filter by SKU, size, colour…" aria-label="Filter picklist">
+      <input type="search" id="q" placeholder="Filter by SKU, product, size, colour…" aria-label="Filter picklist">
       <div class="btns">
         <button class="btn" id="csv"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg> CSV</button>
         <button class="btn" id="print"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg> Print</button>
       </div>
     </div>
     <table class="tbl" id="tbl">
-      <thead><tr><th>#</th><th>SKU</th><th>Size</th><th>Colour</th><th class="r">Orders</th><th class="r">Units</th><th>Couriers</th><th><input type="checkbox" aria-label="Mark all picked" id="allpick"></th></tr></thead>
+      <thead><tr><th>#</th><th>SKU</th><th>Product</th><th>Size</th><th>Colour</th><th class="r">Orders</th><th class="r">Units</th><th>Couriers</th><th><input type="checkbox" aria-label="Mark all picked" id="allpick"></th></tr></thead>
       <tbody></tbody>
     </table>
     <div class="courier-summary" id="couriers"></div>
@@ -412,11 +412,12 @@ export const tools = [
       { title: 'Groups variants', text: 'Same SKU in different sizes or colours are separate rows, so the picker pulls the right variant.' },
       { title: 'Tick-off mode', text: 'Check rows as you pick; progress is kept until the page is refreshed.' },
       { title: 'Print-optimised', text: 'A clean black-and-white print layout with large text fits 40+ rows on one A4 sheet.' },
-      { title: 'CSV export', text: 'Columns: SKU, Size, Colour, Orders, Units, Couriers — ready for Excel or Sheets.' },
+      { title: 'CSV export', text: 'Columns: SKU, Product, Size, Colour, Orders, Units, Couriers — ready for Excel or Sheets.' },
       { title: 'Private by design', text: 'Customer names and addresses are never extracted or stored; only product and courier fields are read.' },
     ],
     faq: [
-      { q: 'Which fields are read from each label?', a: 'SKU, size, colour, quantity, order number (for de-duplication) and courier partner. Customer details are ignored entirely.' },
+      { q: 'Which fields are read from each label?', a: 'SKU, product name, size, colour, quantity, order number (for de-duplication) and courier partner. The product name comes from the label where it is printed, or from the invoice section for Meesho and Amazon. Customer details are ignored entirely.' },
+      { q: 'Can I change the product name shown for a SKU?', a: 'Yes. Click the name and type a shorter one, such as “Blue Kurta M”. It is saved for that SKU in this browser only, so every future picklist and CSV uses it. Clear the box to go back to the name from the label.' },
       { q: 'What if a label has no SKU printed?', a: 'The row is listed under “(no SKU)” with the product description where available, so nothing is silently dropped from the count.' },
       { q: 'Can I use it with cropped label PDFs?', a: 'Yes, as long as the product table is still present on the page. If you cropped labels “Without invoice”, the SKU table is kept and the picklist works normally.' },
       { q: 'Does it double count if the same order appears in two files?', a: 'Orders are de-duplicated by order number when it can be read, so re-downloaded labels are not counted twice.' },
