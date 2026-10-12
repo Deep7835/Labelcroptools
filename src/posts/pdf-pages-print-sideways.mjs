@@ -105,6 +105,8 @@ If you are placing several labels on one sheet, a page stored with the wrong rot
 
 Fix rotation before you impose, never after. Rotate first, then send the file to [Pages per Sheet](/pages-per-sheet/), and the grid comes out even.
 
+For marketplace shipping labels you can skip the separate imposition step entirely. The [Meesho label cropper](/meesho-label-cropper/) and [Flipkart label cropper](/flipkart-label-cropper/) crop each label off its page and lay them out four per A4 sheet in one pass, and the [Amazon label cropper](/amazon-label-cropper/) does the same for Easy Ship labels.
+
 ## What I would do
 
 Make reopening the file a habit rather than a check you remember sometimes.

@@ -62,7 +62,7 @@ What I find interesting is what this implies. The FSN answers "what product is t
 
 At ten products you can remember everything. At fifty you cannot, and neither can a helper who started last week.
 
-The moment that matters is the packing table. Your Flipkart label carries the SKU ID in the product block. Someone reads it and has to walk to the right shelf without thinking.
+The moment that matters is the packing table. Your Flipkart label carries the SKU ID in the product block. Someone reads it and has to walk to the right shelf without thinking. It helps even more when the day's labels arrive in SKU order: the [Flipkart label cropper](/flipkart-label-cropper/) crops each label off its invoice and sorts the whole batch by SKU, so every order for one product comes off the printer together.
 
 If your SKU is \`blue2final\`, they have to think. If it is \`KRT-BLU-M\`, they do not.
 

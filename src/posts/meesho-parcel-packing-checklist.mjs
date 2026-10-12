@@ -119,7 +119,7 @@ Shorter list, and worth saying plainly.
 
 ## Putting it together
 
-A good dispatch session looks like this: picklist first, stock pulled in one pass, labels cropped and sorted, then pack in the same order the labels came out. Card in, filler in, seal properly, done.
+A good dispatch session looks like this: picklist first, stock pulled in one pass, [Meesho labels cropped and sorted by SKU](/meesho-label-cropper/), then pack in the same order the labels came out. Card in, filler in, seal properly, done.
 
 The compounding part is that none of these are one-time wins. Every one of them applies to every parcel you will ever ship, which is exactly why the small habits are worth setting up properly once.
 

@@ -56,7 +56,7 @@ Let me explain the main ones.
 
 **Reverse shipping.** If a parcel comes back (RTO or customer return), the return journey has a cost too. This is the line that surprises sellers most, because it can appear in a later cycle than the original sale.
 
-**Penalties or claims.** Late dispatch, cancelled orders, or quality claims can each create a deduction. These are worth reading carefully because they are often preventable.
+**Penalties or claims.** Late dispatch, cancelled orders, or quality claims can each create a deduction. These are worth reading carefully because they are often preventable. Late dispatch in particular usually starts with a slow packing morning; cropping and sorting the day's labels with the [Meesho label cropper](/meesho-label-cropper/) takes that step down to a minute.
 
 **GST adjustments.** Tax handling on marketplace sales has specific rules, and the statement reflects them.
 
