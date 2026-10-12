@@ -1002,6 +1002,37 @@ ${urls.map((u) => `  <url><loc>${abs(u.loc)}</loc><lastmod>${u.lastmod}</lastmod
 write('.assetsignore', `og-manifest.json\ncover-manifest.json\n**/.DS_Store\n`);
 if (indexNow?.key) write(`${indexNow.key}.txt`, indexNow.key);
 write('robots.txt', `User-agent: *\nAllow: /\nDisallow: /404\n\nSitemap: ${abs('/sitemap.xml')}\n`);
+// llms.txt (llmstxt.org): a plain-Markdown map of the site for AI assistants and answer
+// engines. Generated from the same tool and post data as the pages so it never goes stale.
+const toolLine = (t) => `- [${t.name}](${abs(`/${t.slug}/`)}): ${t.short}`;
+write('llms.txt', `# ${site.name}
+
+> ${site.description}
+
+${site.name} is a set of ${tools.length} free web tools for Indian e-commerce sellers on Meesho, Flipkart and Amazon.in. Every tool runs inside the visitor's browser: PDFs, images and order data are processed on the device and never uploaded, so there is no signup, no usage limit and no watermark.
+
+## Key facts
+- Price: free, with no account, no daily limit and no watermark.
+- Privacy: files are processed locally in the browser and never sent to a server. Customer names and addresses on labels are not stored.
+- Label croppers: Meesho, Flipkart and Amazon.in (Easy Ship and Self Ship), plus a universal cropper that detects the marketplace per page. Other marketplaces can be cropped manually with PDF Crop.
+- Label output: one label per page for 4x6 inch thermal printers, or 2 or 4 labels per A4 sheet, with or without the tax invoice.
+- Sorting: labels can be sorted by SKU, courier partner (Valmo, Delhivery, Xpressbees, Shadowfax, Ekart and others) or quantity, and stamped with the SKU and quantity in large text.
+- Picklist: reads SKU, product name, size, colour, quantity and courier from label PDFs into one table, exportable to CSV.
+- Audience: small and mid-size online sellers in India; prices and examples are in rupees.
+
+${categories.map((c) => `## ${c.name}\n\n${toolsIn(c.slug).map(toolLine).join('\n')}`).join('\n\n')}
+
+${marketplaces.map((m) => {
+  const list = postsOf(m.slug);
+  return list.length ? `## ${m.slug === 'tools' ? 'How-to guides' : `${m.name} seller guides`}\n\n${list.map((p) => `- [${p.title}](${abs(postUrl(p))}): ${p.description}`).join('\n')}` : '';
+}).filter(Boolean).join('\n\n')}
+
+## About
+- [About ${site.name}](${abs('/about/')})
+- [Privacy policy](${abs('/privacy/')}): what is and is not collected
+- [Contact](${abs('/contact/')}): ${site.email}
+- [Sitemap](${abs('/sitemap.xml')})
+`);
 write('manifest.webmanifest', JSON.stringify({
   name: `${site.name} – ${site.tagline}`, short_name: site.shortName, description: site.description, start_url: '/?source=pwa', scope: '/', display: 'standalone',
   background_color: site.bgColor, theme_color: site.themeColor, lang: site.lang, categories: ['business', 'productivity', 'utilities'],
