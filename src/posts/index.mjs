@@ -4,12 +4,14 @@ import meeshoRto from './meesho-rto-returns-cost.mjs';
 import meeshoPayments from './meesho-payment-statement.mjs';
 import meeshoImages from './meesho-catalog-image-rejection.mjs';
 import meeshoPacking from './meesho-parcel-packing-checklist.mjs';
+import meeshoCourierSort from './sort-meesho-labels-by-courier.mjs';
 
 import flipkartPrinting from './flipkart-thermal-vs-a4.mjs';
 import flipkartSku from './flipkart-sku-fsn-organisation.mjs';
 import flipkartWeight from './flipkart-volumetric-weight.mjs';
 import flipkartImages from './flipkart-listing-images.mjs';
 import flipkartDispatch from './flipkart-daily-dispatch-checklist.mjs';
+import flipkartSettlement from './flipkart-settlement-calculation.mjs';
 
 import amazonLabels from './amazon-easy-ship-label-4x6.mjs';
 import amazonFees from './amazon-fees-real-profit.mjs';
@@ -39,11 +41,12 @@ import toolsUpiQr from './create-upi-qr-code-for-payments.mjs';
 import toolsThankYou from './thank-you-cards-online-orders.mjs';
 import toolsTaxInvoice from './what-a-tax-invoice-must-contain.mjs';
 import toolsWhiteBg from './white-background-product-photos.mjs';
+import toolsBulkBarcode from './print-sku-barcodes-in-bulk.mjs';
 
 export const posts = [
-  toolsMeeshoSort, toolsFlipkartInvoice, toolsAmazonSmall, toolsMargins, toolsMergeLocal, toolsSplit, toolsSideways, toolsPhotosPdf, toolsExportImages, toolsPrintTips, toolsPickPack, toolsProfit, toolsVolumetric, toolsBarcode, toolsUpiQr, toolsThankYou, toolsTaxInvoice, toolsWhiteBg,
+  toolsMeeshoSort, toolsFlipkartInvoice, toolsAmazonSmall, toolsMargins, toolsMergeLocal, toolsSplit, toolsSideways, toolsPhotosPdf, toolsExportImages, toolsPrintTips, toolsPickPack, toolsProfit, toolsVolumetric, toolsBarcode, toolsUpiQr, toolsThankYou, toolsTaxInvoice, toolsWhiteBg, toolsBulkBarcode,
   toolsFourUp, toolsImageSize, toolsGstPrice,
-  meeshoLabels, meeshoRto, meeshoPayments, meeshoImages, meeshoPacking,
-  flipkartPrinting, flipkartSku, flipkartWeight, flipkartImages, flipkartDispatch,
+  meeshoLabels, meeshoRto, meeshoPayments, meeshoImages, meeshoPacking, meeshoCourierSort,
+  flipkartPrinting, flipkartSku, flipkartWeight, flipkartImages, flipkartDispatch, flipkartSettlement,
   amazonLabels, amazonFees, amazonImages, amazonFulfilment, amazonReturns,
 ];

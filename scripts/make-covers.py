@@ -537,6 +537,61 @@ def m_tax_split(d):
     lines(d, 736, 496, 220, 3, 34, CARD, 9, .12)
 
 
+def m_settlement(d):
+    """A selling price peeled into fee slices, with what is left landing in the bank."""
+    rr(d, [170, 170, 450, 580], 16, fill=ACCENT, outline=ACCENT, width=4)
+    lines(d, 206, 214, 180, 2, 30, CARD, 10, .3)
+    y = 170
+    for h in (60, 46, 34, 52):
+        rr(d, [500, y, 640, y + h], 8, fill=ACCENT_SOFT, outline=MUTED, width=3)
+        d.line([450, y + h // 2, 500, y + h // 2], fill=MUTED, width=3)
+        y += h + 16
+    d.line([310, 580, 310, 630], fill=ACCENT, width=6)
+    d.line([310, 630, 760, 630], fill=ACCENT, width=6)
+    d.polygon([(760, 612), (798, 630), (760, 648)], fill=ACCENT)
+    d.polygon([(820, 300), (980, 230), (1140, 300)], fill=INK)
+    for x in (850, 920, 990, 1060):
+        rr(d, [x, 316, x + 34, 520], 6, fill=CARD, outline=INK, width=4)
+    rr(d, [820, 536, 1140, 572], 6, fill=INK)
+    rr(d, [830, 590, 1130, 660], 10, fill=ACCENT_SOFT, outline=ACCENT, width=4)
+
+
+def m_courier_groups(d):
+    """Mixed labels resolving into one stack per pickup partner, each with its own tag."""
+    rnd = random.Random(21)
+    tags = [ACCENT, INK, MUTED]
+    order = [1, 0, 2, 0, 1, 0, 2]
+    for i, k in enumerate(order):
+        rr(d, [150, 120 + i * 74, 400, 176 + i * 74], 8, fill=CARD, outline=MUTED, width=3)
+        rr(d, [150, 120 + i * 74, 172, 176 + i * 74], 6, fill=tags[k])
+        barcode(d, 192, 134 + i * 74, 110, 28, INK, rnd.randint(1, 40))
+    d.line([450, 375, 560, 375], fill=ACCENT, width=6)
+    d.polygon([(560, 356), (600, 375), (560, 394)], fill=ACCENT)
+    for c, (k, n) in enumerate(((0, 3), (1, 2), (2, 2))):
+        x = 650 + c * 170
+        rr(d, [x, 300, x + 130, 344], 10, fill=tags[k])
+        for j in range(n):
+            y = 560 - j * 34
+            rr(d, [x, y - 120, x + 130, y], 8, fill=CARD, outline=MUTED, width=3)
+            barcode(d, x + 16, y - 100, 98, 26, INK, 3 + k + j)
+        d.line([x - 10, 576, x + 140, 576], fill=MUTED, width=5)
+
+
+def m_barcode_sheet(d):
+    """A list of codes turning into a full A4 sticker sheet."""
+    page(d, 150, 170, 300, 420)
+    for i in range(8):
+        rr(d, [182, 206 + i * 44, 400 - (i % 3) * 40, 222 + i * 44], 8, fill=INK if i % 2 else MUTED)
+    d.line([490, 380, 590, 380], fill=ACCENT, width=6)
+    d.polygon([(590, 361), (630, 380), (590, 399)], fill=ACCENT)
+    page(d, 670, 80, 420, 590)
+    for r in range(7):
+        for c in range(3):
+            x, y = 696 + c * 130, 106 + r * 78
+            rr(d, [x, y, x + 116, y + 64], 6, fill=ACCENT_SOFT if (r + c) % 4 else CARD, outline=MUTED, width=2)
+            barcode(d, x + 12, y + 12, 92, 32, ACCENT if (r + c) % 4 else INK, r * 3 + c)
+
+
 MOTIFS = {
     'label-crop': m_label_crop, 'return': m_return, 'statement': m_statement, 'photo': m_photo,
     'checklist': m_checklist, 'compare': m_compare, 'barcode': m_barcode, 'box': m_box,
@@ -550,6 +605,7 @@ MOTIFS = {
     'code-types': m_code_types, 'qr': m_qr, 'card-insert': m_card_insert,
     'invoice-fields': m_invoice_fields, 'sweep': m_sweep, 'nup-grid': m_nup_grid,
     'compress': m_compress, 'tax-split': m_tax_split,
+    'settlement': m_settlement, 'courier-groups': m_courier_groups, 'barcode-sheet': m_barcode_sheet,
 }
 
 
