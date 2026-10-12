@@ -70,6 +70,7 @@ const cropperFeatures = (mp) => [
 const invoiceHint = {
   meesho: 'Each order’s label and tax invoice stay together on one page, trimmed to the printed area. Use this when the invoice has to travel inside the parcel.',
   flipkart: 'Each order’s label and tax invoice stay together on one page, trimmed to the printed area. Use this when the invoice has to travel inside the parcel.',
+  shopsy: 'Each order’s label and tax invoice stay together on one page, trimmed to the printed area. Use this when the invoice has to travel inside the parcel.',
   amazon: 'Amazon prints the invoice as its own full page, so each invoice is placed right after its label instead of being shrunk onto it.',
   auto: 'Meesho and Flipkart labels keep their invoice on the same page. Amazon invoices are full pages, so each one is placed right after its label.',
 };
@@ -77,7 +78,7 @@ const labelPanel = (market) => `
 <div class="tool-ui" data-tool="label-cropper" data-market="${market}">
   ${dropzone({ multiple: true, title: 'Drop your label PDF here', sub: 'Multiple files allowed · they are merged in order · nothing is uploaded' })}
   <div class="opts">
-    ${radios('invoice', 'Invoice', [{ v: 'without', l: 'Without invoice' }, { v: 'with', l: market === 'meesho' || market === 'flipkart' ? 'With invoice (one page)' : 'With invoice' }, ...(market === 'amazon' ? [] : [{ v: 'split', l: 'Label & invoice on separate pages' }])])}
+    ${radios('invoice', 'Invoice', [{ v: 'without', l: 'Without invoice' }, { v: 'with', l: ['meesho', 'flipkart', 'shopsy'].includes(market) ? 'With invoice (one page)' : 'With invoice' }, ...(market === 'amazon' ? [] : [{ v: 'split', l: 'Label & invoice on separate pages' }])])}
     <p class="opt-hint" data-show="invoice=with">${invoiceHint[market]}</p>
     <p class="opt-hint" data-show="invoice=split">Each label is cut from its invoice and gets its own page, with that order’s invoice on the page right after it. Labels print at full size and the invoice is still there to pack.</p>
     ${radios('layout', 'Output layout', [{ v: 'thermal', l: 'Label printer (1 per page)' }, { v: 'a4x4', l: 'A4 · 4 per sheet' }, { v: 'a4x2', l: 'A4 · 2 per sheet' }])}
@@ -270,7 +271,60 @@ export const tools = [
       },
       ...cropperFaqCommon('Flipkart'),
     ],
-    related: ['meesho-label-cropper', 'amazon-label-cropper', 'picklist-generator', 'pages-per-sheet'],
+    related: ['shopsy-label-cropper', 'meesho-label-cropper', 'amazon-label-cropper', 'picklist-generator'],
+  },
+
+  {
+    slug: 'shopsy-label-cropper',
+    short: "Shopsy orders from Seller Hub: label-only or with invoice, thermal or A4.",
+    category: 'label-tools',
+    name: 'Shopsy Label Cropper',
+    h1: 'Shopsy Label Cropper',
+    title: 'Shopsy Label Cropper – Crop Shopsy Label PDF Free, 4x6/A4',
+    description:
+      'Crop Shopsy shipping label PDFs from Flipkart Seller Hub: remove or keep the invoice, sort by SKU, and print on thermal 4x6 or A4 with 4 labels per sheet. Free, no upload.',
+    tagline: 'Shopsy orders download from Flipkart Seller Hub in the same label PDF. Cut it down to the label, sorted and ready for your thermal or A4 printer.',
+    keywords: ['shopsy label crop', 'shopsy label cropper', 'crop shopsy shipping label', 'shopsy label pdf', 'shopsy label cutter', 'shopsy thermal label'],
+    icon: 'scissors',
+    script: 'label-cropper',
+    libs: ['pdfjs', 'pdflib'],
+    panel: labelPanel('shopsy'),
+    intro: [
+      'Shopsy is Flipkart’s app for value shoppers, and its orders are fulfilled through your Flipkart Seller Hub. The label PDF you download carries an “Ordered through Shopsy” mark, but underneath it is the standard Flipkart layout: an Ekart shipping label on top and the tax invoice below it, one order per A4 page.',
+      'That means the same problem: each order uses a full sheet when the label needs a quarter of it. This cropper finds the label block and the invoice on every page, reads the SKU ID, product and quantity, and gives you labels only, label and invoice together, or label and invoice on separate pages, sorted the way you pack.',
+    ],
+    steps: [
+      { title: 'Download the Shopsy labels', text: 'In Flipkart Seller Hub, open your orders and download labels as usual. Shopsy and Flipkart orders can sit in the same file; both are handled.' },
+      { title: 'Pick invoice, layout and sorting', text: 'Without invoice for labels only, With invoice to keep both on one page, or separate pages. Choose Label printer or A4, and sort by SKU if you like.' },
+      { title: 'Crop & download', text: 'Check the preview, click Crop & download and print at 100 % scale.' },
+    ],
+    benefits: [
+      { title: 'No separate Shopsy step', text: 'Shopsy and regular Flipkart orders in one download are cropped together in a single pass.' },
+      { title: 'Low-price orders, lower cost per parcel', text: 'Shopsy orders are often small-ticket. Four labels per A4 sheet instead of one cuts paper and toner on every order.' },
+      { title: 'SKU and product read for you', text: 'The SKU ID and product name on each label are read, so the batch can be sorted and stamped before it reaches the packing table.' },
+      { title: 'Customer data stays on your PC', text: 'The file is processed in your browser. Names, addresses and phone numbers on the labels are never uploaded.' },
+    ],
+    features: cropperFeatures('Shopsy'),
+    faq: [
+      {
+        q: 'Is a Shopsy label different from a Flipkart label?',
+        a: 'Only in branding. Shopsy orders are fulfilled through Flipkart Seller Hub and download in the same label PDF format, with an “Ordered through Shopsy” mark on the label. The layout, Ekart label block, SKU ID table and invoice are the same, which is why this cropper and the Flipkart cropper read them identically.',
+      },
+      {
+        q: 'Can I crop Shopsy and Flipkart orders together?',
+        a: 'Yes. A Seller Hub download often mixes both. Drop the whole file in and every page is cropped the same way, then sorted together if you choose a sort order.',
+      },
+      {
+        q: 'How do I print Shopsy labels on A4 with 4 per sheet?',
+        a: 'Choose Without invoice, then “A4 · 4 per sheet”, and click Crop & download. Each sheet carries four labels with light cut borders. Print at Actual size, not Fit to page.',
+      },
+      {
+        q: 'Can I keep the invoice with the Shopsy label?',
+        a: 'Yes. “With invoice (one page)” keeps the label and invoice together on one trimmed page. “Label & invoice on separate pages” gives the label a full-size page of its own with its invoice right after it.',
+      },
+      ...cropperFaqCommon('Shopsy'),
+    ],
+    related: ['flipkart-label-cropper', 'meesho-label-cropper', 'picklist-generator', 'sku-mapping'],
   },
 
   {

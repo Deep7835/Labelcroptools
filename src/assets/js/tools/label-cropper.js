@@ -104,7 +104,7 @@
   });
 
   // ── processing history (stored in this browser by engine.js) ──────
-  const TOOL = { meesho: 'Meesho', flipkart: 'Flipkart', amazon: 'Amazon' }[market] || 'Universal';
+  const TOOL = { meesho: 'Meesho', flipkart: 'Flipkart', shopsy: 'Shopsy', amazon: 'Amazon' }[market] || 'Universal';
   const esc = (v) => String(v ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const when = (t) => new Date(t).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
   async function renderHistory() {

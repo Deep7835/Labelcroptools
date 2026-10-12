@@ -571,7 +571,7 @@ const categoryPage = (c) => {
 const homeFaq = [
   { q: 'Are these tools really free?', a: `Yes. Every tool on ${site.name} is free with no signup, no daily limits and no watermark. The site is supported by the sellers who share it.` },
   { q: 'Do you upload my label PDFs or photos?', a: 'No. All processing — cropping, merging, resizing, calculations — happens inside your browser using WebAssembly and the Canvas API. Files never leave your device, which is why the tools also work offline.' },
-  { q: 'Which marketplaces are supported?', a: 'Label croppers are tuned for Meesho, Flipkart and Amazon.in, with a universal cropper that auto-detects the format and a manual PDF crop for anything else. Calculators and generators work for any channel.' },
+  { q: 'Which marketplaces are supported?', a: 'Label croppers are tuned for Meesho, Flipkart, Shopsy and Amazon.in, with a universal cropper that auto-detects the format and a manual PDF crop for anything else. Calculators and generators work for any channel.' },
   { q: 'Can I use these tools on my phone?', a: 'Yes. Everything is responsive and touch-friendly. Heavy PDF jobs are faster on a laptop, but cropping a day’s labels on a phone works fine.' },
   { q: 'Is there a limit on file size or pages?', a: 'No fixed limit. Processing happens in your device’s memory, so very large files depend on your RAM. Several hundred pages is routine.' },
 ];
@@ -1016,7 +1016,7 @@ ${site.name} is a set of ${tools.length} free web tools for Indian e-commerce se
 ## Key facts
 - Price: free, with no account, no daily limit and no watermark.
 - Privacy: files are processed locally in the browser and never sent to a server. The label croppers keep the last 20 cropped PDFs for 7 days in the visitor's own browser (processing history) so they can be downloaded again; this can be switched off or cleared at any time.
-- Label croppers: Meesho, Flipkart and Amazon.in (Easy Ship and Self Ship), plus a universal cropper that detects the marketplace per page. Other marketplaces can be cropped manually with PDF Crop.
+- Label croppers: Meesho, Flipkart, Shopsy (orders from Flipkart Seller Hub) and Amazon.in (Easy Ship and Self Ship), plus a universal cropper that detects the marketplace per page. Other marketplaces can be cropped manually with PDF Crop.
 - Label output: one label per page for 4x6 inch thermal printers, or 2 or 4 labels per A4 sheet. The tax invoice can be dropped, kept on the same page as the label, or printed on its own page right after each label.
 - Sorting: labels can be sorted by SKU, courier partner (Valmo, Delhivery, Xpressbees, Shadowfax, Ekart and others) or quantity, and stamped with the SKU and quantity in large text.
 - Picklist: reads SKU, product name, size, colour, quantity and courier from label PDFs into one table, exportable to CSV.
