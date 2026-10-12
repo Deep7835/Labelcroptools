@@ -83,6 +83,7 @@ const labelPanel = (market) => `
     ${radios('layout', 'Output layout', [{ v: 'thermal', l: 'Label printer (1 per page)' }, { v: 'a4x4', l: 'A4 · 4 per sheet' }, { v: 'a4x2', l: 'A4 · 2 per sheet' }])}
     ${radios('size', 'Label page size', [{ v: 'auto', l: 'Auto (cropped size)' }, { v: '4x6', l: 'Fit to 4 × 6 in' }], 0, 'data-show="layout=thermal"')}
     ${radios('sort', 'Sort labels by', [{ v: 'none', l: 'Original order' }, { v: 'sku', l: 'SKU' }, { v: 'courier', l: 'Courier partner' }, { v: 'qty', l: 'Qty (multi-qty first)' }])}
+    <p class="opt-hint">Sorting and the SKU stamp use your own codes wherever you have set them in <a href="/sku-mapping/">SKU Mapping</a>.</p>
     <fieldset class="opt"><legend>Extras</legend>
       <div class="chks">
         ${check('stamp', 'Stamp SKU &amp; Qty in big text under each label')}
@@ -434,17 +435,98 @@ export const tools = [
       { title: 'Groups variants', text: 'Same SKU in different sizes or colours are separate rows, so the picker pulls the right variant.' },
       { title: 'Tick-off mode', text: 'Check rows as you pick; progress is kept until the page is refreshed.' },
       { title: 'Print-optimised', text: 'A clean black-and-white print layout with large text fits 40+ rows on one A4 sheet.' },
-      { title: 'CSV export', text: 'Columns: SKU, Product, Size, Colour, Orders, Units, Couriers — ready for Excel or Sheets.' },
+      { title: 'CSV export', text: 'Columns: SKU, Marketplace SKUs, Product, Size, Colour, Orders, Units, Couriers — ready for Excel or Sheets.' },
       { title: 'Private by design', text: 'Customer names and addresses are never extracted or stored; only product and courier fields are read.' },
     ],
     faq: [
       { q: 'Which fields are read from each label?', a: 'SKU, product name, size, colour, quantity, order number (for de-duplication) and courier partner. The product name comes from the label where it is printed, or from the invoice section for Meesho and Amazon. Customer details are ignored entirely.' },
       { q: 'Can I change the product name shown for a SKU?', a: 'Yes. Click the name and type a shorter one, such as “Blue Kurta M”. It is saved for that SKU in this browser only, so every future picklist and CSV uses it. Clear the box to go back to the name from the label.' },
+      { q: 'Can the picklist use my own SKU codes?', a: 'Yes. Map marketplace SKUs to your own codes in the SKU Mapping tool. The picklist then groups rows by your code, so the same product sold on Meesho and Flipkart under different SKUs becomes one row with the combined quantity.' },
       { q: 'What if a label has no SKU printed?', a: 'The row is listed under “(no SKU)” with the product description where available, so nothing is silently dropped from the count.' },
       { q: 'Can I use it with cropped label PDFs?', a: 'Yes, as long as the product table is still present on the page. If you cropped labels “Without invoice”, the SKU table is kept and the picklist works normally.' },
       { q: 'Does it double count if the same order appears in two files?', a: 'Orders are de-duplicated by order number when it can be read, so re-downloaded labels are not counted twice.' },
     ],
-    related: ['meesho-label-cropper', 'flipkart-label-cropper', 'barcode-generator', 'profit-calculator'],
+    related: ['sku-mapping', 'meesho-label-cropper', 'flipkart-label-cropper', 'barcode-generator'],
+  },
+
+  {
+    slug: 'sku-mapping',
+    short: "Map Meesho, Flipkart and Amazon SKUs to your own codes for sorting and picklists.",
+    category: 'label-tools',
+    name: 'SKU Mapping',
+    h1: 'SKU Mapping for Meesho, Flipkart & Amazon',
+    title: 'SKU Mapping Tool – Map Marketplace SKUs to Your Own Codes',
+    description:
+      'Map Meesho, Flipkart and Amazon seller SKUs to your own warehouse SKU codes and short product names. Label sorting, SKU stamps and picklists then use your codes. Free, no signup.',
+    tagline: 'One product, three marketplace SKUs, one code on your shelf. Map them once and every cropped label and picklist speaks your language.',
+    keywords: ['sku mapping', 'sku mapping tool', 'meesho sku mapping', 'flipkart sku mapping', 'map marketplace sku to inventory sku', 'master sku mapping'],
+    icon: 'tag',
+    badge: 'New',
+    script: 'mapping',
+    libs: ['pdfjs'],
+    panel: `
+<div class="tool-ui" data-tool="mapping">
+  ${dropzone({ multiple: true, title: 'Drop label PDFs to collect your SKUs', sub: 'Meesho, Flipkart or Amazon · every SKU found is added below · nothing is uploaded' })}
+  <div class="stats" id="stats"></div>
+  <form class="map-add" id="addform" autocomplete="off">
+    <label class="field"><span>Marketplace SKU</span><input type="text" id="new-msku" placeholder="e.g. dzGdRvr3" required spellcheck="false"></label>
+    <label class="field"><span>Your SKU</span><input type="text" id="new-code" list="codes" placeholder="e.g. POSTER-DS-3" spellcheck="false"></label>
+    <label class="field"><span>Product name</span><input type="text" id="new-name" placeholder="Short name"></label>
+    <button class="btn" type="submit"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg> Add</button>
+  </form>
+  <p class="muted" id="empty">No mappings yet. Drop a label PDF above to collect your SKUs, or add one by hand.</p>
+  <div class="tablewrap" id="tablewrap" hidden>
+    <div class="table-tools">
+      <input type="search" id="q" placeholder="Filter by SKU or name…" aria-label="Filter mappings">
+      <div class="btns">
+        <label class="chk"><input type="checkbox" id="todo"><span>Only unmapped</span></label>
+        <button class="btn" id="importbtn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-upload"/></svg> Import CSV</button>
+        <button class="btn" id="exportbtn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg> Export CSV</button>
+        <button class="btn" id="clearbtn" type="button"><svg class="ic" aria-hidden="true"><use href="#i-trash"/></svg> Clear</button>
+      </div>
+    </div>
+    <table class="tbl" id="tbl">
+      <thead><tr><th>Marketplace SKU</th><th>Your SKU</th><th>Product name</th><th><span class="sr-only">Remove</span></th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <input type="file" id="csvfile" accept=".csv,text/csv,.tsv,text/tab-separated-values" hidden>
+  <datalist id="codes"></datalist>
+  <p class="status" id="status" role="status" aria-live="polite"></p>
+  <p class="local-note"><svg class="ic" aria-hidden="true"><use href="#i-shield"/></svg> Mappings are saved in this browser only. Export a CSV to back them up or move them to another device.</p>
+</div>`,
+    intro: [
+      'Marketplaces each give the same product a different SKU. Meesho may print a random-looking code like dzGdRvr3, Flipkart shows the seller SKU ID you typed months ago, and your shelf bin says POSTER-DS-3. Packers end up translating between them in their heads, which is exactly where wrong-item dispatches come from.',
+      'SKU Mapping lets you record, once, that dzGdRvr3 on Meesho and marvel10 on Flipkart are both your POSTER-DS-3, with a short name you can read at a glance. After that, the label croppers sort and stamp labels with your code, and the Picklist Generator merges every marketplace SKU for that product into a single pick row.',
+    ],
+    steps: [
+      { title: 'Collect your SKUs', text: 'Drop one or more label PDFs from Meesho, Flipkart or Amazon. Every SKU found is listed with the product name read from the label or invoice.' },
+      { title: 'Type your own codes', text: 'Enter your warehouse SKU next to each marketplace SKU, and shorten long product names. Several marketplace SKUs can share one code. Everything saves as you type.' },
+      { title: 'Crop and pick as usual', text: 'Open any label cropper or the Picklist Generator. Sorting, the SKU stamp and the picklist now use your codes and names automatically.' },
+    ],
+    benefits: [
+      { title: 'One code per product', text: 'The same item listed on three marketplaces shows up as one SKU on labels and one row on the picklist.' },
+      { title: 'Readable labels', text: 'Stamp your own short SKU under every label instead of a marketplace code nobody on the packing table recognises.' },
+      { title: 'Fewer wrong-item returns', text: 'When the label, the picklist and the shelf bin all show the same code, the packer has nothing to translate.' },
+      { title: 'Set up in minutes', text: 'SKUs are collected from your existing label files, so you only type the codes, never the marketplace SKUs.' },
+    ],
+    features: [
+      { title: 'Collect from label PDFs', text: 'Reads every SKU and product name from Meesho, Flipkart and Amazon label files.' },
+      { title: 'Many-to-one mapping', text: 'Point several marketplace SKUs at one of your codes; the picklist merges them.' },
+      { title: 'Used everywhere', text: 'Label croppers sort and stamp with your codes; the Picklist Generator groups and names with them.' },
+      { title: 'CSV import and export', text: 'Bring in a mapping sheet from Excel or Google Sheets, or back yours up in one click.' },
+      { title: 'Code suggestions', text: 'Codes you have already used are suggested as you type, so the same code is spelt the same way.' },
+      { title: 'Private by design', text: 'Mappings stay in this browser. Nothing is uploaded and there is no account.' },
+    ],
+    faq: [
+      { q: 'What is SKU mapping?', a: 'SKU mapping links the SKU a marketplace uses for a product to the code you use in your own warehouse or stock sheet. Once mapped, tools can show your code wherever the marketplace SKU would have appeared.' },
+      { q: 'Can several marketplace SKUs map to one of my SKUs?', a: 'Yes, and that is the main reason to map. Give the Meesho, Flipkart and Amazon SKUs for the same product the same code, and the picklist shows one row with the combined quantity.' },
+      { q: 'Which tools use my mapping?', a: 'The Meesho, Flipkart, Amazon and Universal label croppers use your codes when sorting by SKU and in the SKU and quantity stamp. The Picklist Generator groups rows by your code and shows your product names.' },
+      { q: 'Where are my mappings stored?', a: 'In this browser only, on this device. Nothing is sent to a server. Clearing your browser data removes them, so export a CSV as a backup and import it on any other device or browser you use.' },
+      { q: 'What CSV format does the import accept?', a: 'A sheet with columns for the marketplace SKU, your SKU and optionally the product name. Headers such as Marketplace SKU, Your SKU and Product name are recognised; without headers the first three columns are read in that order. Exported files import back unchanged.' },
+      { q: 'Do I have to map every SKU?', a: 'No. Unmapped SKUs keep working exactly as before with their marketplace code. Use the Only unmapped filter to see what is left whenever new products appear.' },
+    ],
+    related: ['picklist-generator', 'meesho-label-cropper', 'flipkart-label-cropper', 'barcode-generator'],
   },
 
   // ═══════════════════════ PDF TOOLS ═══════════════════════

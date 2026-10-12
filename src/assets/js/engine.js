@@ -163,6 +163,23 @@
     return parts.join(' ').replace(/^\s*\d{1,2}\s+/, '').replace(/\|?\s*B0[A-Z0-9]{8}\s*$/, '').replace(/[\s|]+$/, '').replace(/\s+/g, ' ').trim();
   };
 
+  // SKU mapping: marketplace SKU → { code: your own SKU, name: short product name, market }.
+  // Kept in this browser only; the SKU Mapping tool imports and exports it as CSV.
+  const MAP_KEY = 'skud.skuMap';
+  const skuMap = {
+    all() {
+      let m = {}; try { m = JSON.parse(localStorage.getItem(MAP_KEY)) || {}; } catch {}
+      // Product names the picklist saved before mapping existed move in once.
+      try {
+        const old = JSON.parse(localStorage.getItem('skud.productNames'));
+        if (old) { for (const [k, v] of Object.entries(old)) { m[k] ||= {}; m[k].name ||= v; } localStorage.setItem(MAP_KEY, JSON.stringify(m)); localStorage.removeItem('skud.productNames'); }
+      } catch {}
+      return m;
+    },
+    save(m) { try { localStorage.setItem(MAP_KEY, JSON.stringify(m)); } catch {} },
+  };
+  const mapSku = (m, sku) => (sku && m[sku]?.code) || sku;
+
   // Analyse one page → crop boxes + metadata.
   const analyzePage = async (doc, num, forced = 'auto') => {
     const t = await pageText(doc, num);
@@ -378,5 +395,5 @@
     container.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); onRemove?.(+b.dataset.rm); }));
   };
 
-  Object.assign(S, { lib, loadLibs, mm2pt, pt2mm, PAPER, readFile, openPdf, renderPage, pageText, detectMarket, detectCourier, analyzePage, invoiceNameForSku, buildLabels, nup, renderThumbs, fileList });
+  Object.assign(S, { lib, loadLibs, mm2pt, pt2mm, PAPER, readFile, openPdf, renderPage, pageText, detectMarket, detectCourier, analyzePage, invoiceNameForSku, skuMap, mapSku, buildLabels, nup, renderThumbs, fileList });
 })();

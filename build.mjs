@@ -1018,6 +1018,7 @@ ${site.name} is a set of ${tools.length} free web tools for Indian e-commerce se
 - Label output: one label per page for 4x6 inch thermal printers, or 2 or 4 labels per A4 sheet. The tax invoice can be dropped, kept on the same page as the label, or printed on its own page right after each label.
 - Sorting: labels can be sorted by SKU, courier partner (Valmo, Delhivery, Xpressbees, Shadowfax, Ekart and others) or quantity, and stamped with the SKU and quantity in large text.
 - Picklist: reads SKU, product name, size, colour, quantity and courier from label PDFs into one table, exportable to CSV.
+- SKU mapping: marketplace SKUs can be mapped to the seller's own SKU codes and short product names. Label sorting, the SKU stamp and the picklist then use those codes, merging the same product across marketplaces. Mappings are stored in the browser and can be imported or exported as CSV.
 - Audience: small and mid-size online sellers in India; prices and examples are in rupees.
 
 ${categories.map((c) => `## ${c.name}\n\n${toolsIn(c.slug).map(toolLine).join('\n')}`).join('\n\n')}

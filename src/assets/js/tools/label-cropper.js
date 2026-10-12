@@ -41,13 +41,14 @@
     S.sortable($('#files'), '.file-row', () => { const order = $$('.file-row', $('#files')).map((r) => +r.dataset.i); files = order.map((i) => files[i]); renderList(); schedulePreview(); });
   }
   function entries(o) {
-    const list = [];
+    const list = [], map = S.skuMap.all();
     files.forEach((f, fi) => f.pages.forEach((p, pi) => {
       if (p.empty) return;
       if (p.isInvoicePage && o.invoice === 'without') return;
       const box = o.invoice === 'with' ? p.fullBox : (p.labelBox || p.fullBox);
-      const m = p.ref || p;
-      const stamp = o.stamp && !p.isInvoicePage ? `SKU ${p.sku || '—'}   QTY ${p.qty}${p.size ? '   ' + p.size : ''}${p.color ? '   ' + p.color : ''}` : null;
+      // Your own SKU codes (SKU Mapping tool) replace marketplace SKUs for sorting and the stamp.
+      const m = { ...(p.ref || p) }; m.sku = S.mapSku(map, m.sku);
+      const stamp = o.stamp && !p.isInvoicePage ? `SKU ${S.mapSku(map, p.sku) || '—'}   QTY ${p.qty}${p.size ? '   ' + p.size : ''}${p.color ? '   ' + p.color : ''}` : null;
       const key = keyOf(m, o.sort);
       list.push({ src: f.lib, idx: pi, box, stamp, key, seq: list.length, courier: m.courier, sku: m.sku });
       // Separate pages: the invoice cut from the same page follows its label as its own page.
@@ -63,7 +64,8 @@
     const labels = all.filter((p) => !p.isInvoicePage), inv = all.length - labels.length;
     const couriers = {}; labels.forEach((p) => (couriers[p.courier] = (couriers[p.courier] || 0) + 1));
     const cs = Object.entries(couriers).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(' · ');
-    S.status(`${labels.length} labels found${inv ? ` · ${inv} invoice page${inv > 1 ? 's' : ''}` : ''}${labels.filter((p) => p.sku).length ? ` · ${new Set(labels.map((p) => p.sku).filter(Boolean)).size} SKUs` : ''}${cs ? ' · ' + cs : ''}`, 'ok');
+    const map = S.skuMap.all(), mapped = new Set(labels.map((p) => p.sku).filter((k) => map[k]?.code)).size;
+    S.status(`${labels.length} labels found${inv ? ` · ${inv} invoice page${inv > 1 ? 's' : ''}` : ''}${labels.filter((p) => p.sku).length ? ` · ${new Set(labels.map((p) => p.sku).filter(Boolean)).size} SKUs` : ''}${mapped ? ` · ${mapped} mapped to your SKUs` : ''}${cs ? ' · ' + cs : ''}`, 'ok');
   }
   function schedulePreview() { clearTimeout(previewT); previewT = setTimeout(renderPreview, 150); }
   async function renderPreview() {

@@ -473,9 +473,16 @@ progress { width: 100%; height: 10px; accent-color: var(--ink); }
 .tbl td input[type="text"], .tbl td input[type="number"] { padding: 6px 8px; font-size: .9rem; }
 .tbl .pname input { width: 100%; min-width: 220px; }
 .tbl .pn-print { display: none; }
+.tbl .msku { font-size: .78em; margin-top: 2px; overflow-wrap: anywhere; }
+.map-add { display: grid; grid-template-columns: 1fr 1fr 1.4fr auto; gap: 10px; align-items: end; margin-top: 18px; }
+.map-add .btn { height: 42px; }
+@media (max-width: 720px) { .map-add { grid-template-columns: 1fr 1fr; } .map-add .field:nth-child(3) { grid-column: 1 / -1; } }
+.btns .chk { padding: 0 6px; }
+.btn-icon.del { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 1.3rem; line-height: 1; padding: 4px 8px; }
+.btn-icon.del:hover { color: var(--danger); }
 .tablewrap { margin-top: 18px; overflow: auto; }
 .table-tools { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-.table-tools input { width: 320px; max-width: 100%; }
+.table-tools input[type="search"] { width: 320px; max-width: 100%; }
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-top: 18px; }
 .stat { border: 1px solid var(--line); border-radius: var(--r-sm); padding: 14px 16px; background: var(--card); box-shadow: var(--shadow-sm); }
 .stat b { display: block; font: 800 1.6rem/1.1 var(--font-display); letter-spacing: -0.02em; }
