@@ -295,6 +295,7 @@ button.chip:active { scale: .96; }
 /* ── forms ────────────────────────────────────────────────────────────── */
 .opts { display: grid; gap: 16px; margin-top: 20px; }
 .opt { border: 0; padding: 0; margin: 0; min-width: 0; }
+.opt-hint { margin: -8px 0 0; font-size: .85rem; line-height: 1.45; color: var(--muted); max-width: 62ch; }
 .opt legend, .field > span { font: 600 11px/1 var(--font-mono); text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin-bottom: 8px; display: block; padding: 0; }
 /* Segmented control: one recessed track, the chosen option raised onto the card surface.
    8px segment corners = 12px track radius minus the 4px track padding. */

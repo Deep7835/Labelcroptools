@@ -65,11 +65,20 @@ const cropperFeatures = (mp) => [
   { title: 'SKU & Qty stamp', text: 'Optionally print the SKU and quantity in large text under each label so packers never squint at the small product table.' },
 ];
 
+// What "With invoice" produces differs by marketplace: Meesho and Flipkart print the label and
+// invoice on one source page, Amazon prints the invoice as its own full page.
+const invoiceHint = {
+  meesho: 'Each order’s label and tax invoice stay together on one page, trimmed to the printed area. Use this when the invoice has to travel inside the parcel.',
+  flipkart: 'Each order’s label and tax invoice stay together on one page, trimmed to the printed area. Use this when the invoice has to travel inside the parcel.',
+  amazon: 'Amazon prints the invoice as its own full page, so each invoice is placed right after its label instead of being shrunk onto it.',
+  auto: 'Meesho and Flipkart labels keep their invoice on the same page. Amazon invoices are full pages, so each one is placed right after its label.',
+};
 const labelPanel = (market) => `
 <div class="tool-ui" data-tool="label-cropper" data-market="${market}">
   ${dropzone({ multiple: true, title: 'Drop your label PDF here', sub: 'Multiple files allowed · they are merged in order · nothing is uploaded' })}
   <div class="opts">
-    ${radios('invoice', 'Invoice', [{ v: 'without', l: 'Without invoice' }, { v: 'with', l: 'With invoice' }])}
+    ${radios('invoice', 'Invoice', [{ v: 'without', l: 'Without invoice' }, { v: 'with', l: market === 'meesho' || market === 'flipkart' ? 'With invoice (one page)' : 'With invoice' }])}
+    <p class="opt-hint" data-show="invoice=with">${invoiceHint[market]}</p>
     ${radios('layout', 'Output layout', [{ v: 'thermal', l: 'Label printer (1 per page)' }, { v: 'a4x4', l: 'A4 · 4 per sheet' }, { v: 'a4x2', l: 'A4 · 2 per sheet' }])}
     ${radios('size', 'Label page size', [{ v: 'auto', l: 'Auto (cropped size)' }, { v: '4x6', l: 'Fit to 4 × 6 in' }], 0, 'data-show="layout=thermal"')}
     ${radios('sort', 'Sort labels by', [{ v: 'none', l: 'Original order' }, { v: 'sku', l: 'SKU' }, { v: 'courier', l: 'Courier partner' }, { v: 'qty', l: 'Qty (multi-qty first)' }])}
@@ -124,7 +133,7 @@ export const tools = [
     panel: labelPanel('meesho'),
     intro: [
       'Meesho’s “Download Labels” file puts the shipping label and the full tax invoice on the same A4 page. Print it as-is and you get one label per sheet, a lot of blank paper, and an invoice the courier doesn’t need. Multiply that by 100 orders and you are paying for ink and time you don’t have to.',
-      'The Meesho Label Cropper reads each page, finds where the label ends and the TAX INVOICE begins, and cuts exactly there. Choose “With invoice” to keep both while trimming the empty space, or “Without invoice” to keep only the label. It also reads the SKU, quantity and courier (Valmo, Delhivery, Xpressbees, Ekart, Shadowfax and others) printed on every label so the batch can be sorted before printing.',
+      'The Meesho Label Cropper reads each page, finds where the label ends and the TAX INVOICE begins, and cuts exactly there. Choose “With invoice (one page)” to keep both on a single page while trimming the empty space, or “Without invoice” to keep only the label. It also reads the SKU, quantity and courier (Valmo, Delhivery, Xpressbees, Ekart, Shadowfax and others) printed on every label so the batch can be sorted before printing.',
     ],
     steps: [
       { title: 'Select your Meesho label PDF', text: 'Drop the file downloaded from the Meesho Supplier Panel (Orders → Download Labels). You can add more than one file — they are merged in order.' },
@@ -146,6 +155,10 @@ export const tools = [
       {
         q: 'How do I crop a Meesho label PDF without the invoice?',
         a: 'Upload the label PDF, keep “Without invoice” selected, choose your printer layout and click Crop & download. The tool detects the TAX INVOICE heading on each page and keeps only the label block above it.',
+      },
+      {
+        q: 'Can I print the Meesho label and invoice on one page?',
+        a: 'Yes. Choose “With invoice (one page)” and each order’s label and tax invoice stay together on a single page, with the empty space trimmed. It works on 4 × 6 thermal rolls and on A4 sheets, and suits sellers who keep the invoice inside the parcel.',
       },
       {
         q: 'Which couriers does the sort-by-courier option recognise?',
@@ -226,7 +239,7 @@ export const tools = [
       },
       {
         q: 'Can I keep the Flipkart invoice with the label?',
-        a: 'Yes. Choose “With invoice” — the label and invoice stay together on the same page while the blank margin at the bottom is trimmed. Invoice-only pages are kept in that mode and dropped in “Without invoice” mode.',
+        a: 'Yes. Choose “With invoice (one page)” and the label and invoice stay together on a single page while the blank margin at the bottom is trimmed. Invoice-only pages are kept in that mode and dropped in “Without invoice” mode.',
       },
       {
         q: 'Why does the tool detect text instead of using fixed crop sizes?',
