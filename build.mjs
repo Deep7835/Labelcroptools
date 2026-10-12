@@ -138,7 +138,7 @@ const ANALYTICS_ORIGINS = {
   ga4: {
     script: ['https://www.googletagmanager.com'],
     connect: ['https://www.google-analytics.com', 'https://*.google-analytics.com', 'https://www.googletagmanager.com'],
-    img: ['https://www.google-analytics.com'],
+    img: ['https://www.google-analytics.com', 'https://www.googletagmanager.com'],
   },
 };
 // A bare origin passes straight through, including a wildcard host, which CSP accepts
