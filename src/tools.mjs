@@ -93,7 +93,16 @@ const labelPanel = (market) => `
   </div>
   ${preview('Preview (first 8 labels)')}
   ${runbar('Crop & download PDF')}
-</div>`;
+</div>
+<section class="history" id="history" aria-labelledby="history-h">
+  <div class="history-head">
+    <h3 id="history-h">Processing history</h3>
+    <label class="chk"><input type="checkbox" id="histon" checked><span>Keep on this device</span></label>
+    <button class="btn btn-sm" id="histclear" type="button">Clear</button>
+  </div>
+  <ul class="history-list" id="histlist"></ul>
+  <p class="muted history-note">Your last 20 cropped files from every label cropper, kept for 7 days in this browser only and never uploaded. They include customer addresses, so clear them on a shared computer.</p>
+</section>`;
 
 const cropperFaqCommon = (mp) => [
   {
@@ -107,6 +116,10 @@ const cropperFaqCommon = (mp) => [
   {
     q: 'What does “Fit to 4 × 6 in” do?',
     a: 'It scales every cropped label to a standard 4 × 6 inch page so thermal printers with a fixed roll size print edge-to-edge without asking you to pick a custom paper size.',
+  },
+  {
+    q: 'Can I download a cropped file again later?',
+    a: 'Yes. Processing history under the cropper keeps your last 20 cropped PDFs for 7 days, in this browser only, so you can download one again without re-cropping. Switch off “Keep on this device” to stop saving them and delete what is stored.',
   },
   {
     q: 'Can I crop several PDFs at once?',

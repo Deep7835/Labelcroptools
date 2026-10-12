@@ -18,7 +18,7 @@ export const site = {
   email: 'hello@labelcroptools.com',
   whatsapp: '', // e.g. '919999999999' → adds a WhatsApp support link when set
   foundingYear: 2026,
-  updated: '2026-09-23',
+  updated: '2026-10-12',
   // Public by design: Google serves these tokens for you to publish. Not secrets.
   // One per Search Console owner/property; removing one un-verifies that owner.
   googleSiteVerification: [

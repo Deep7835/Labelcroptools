@@ -478,6 +478,18 @@ progress { width: 100%; height: 10px; accent-color: var(--ink); }
 .map-add .btn { height: 42px; }
 @media (max-width: 720px) { .map-add { grid-template-columns: 1fr 1fr; } .map-add .field:nth-child(3) { grid-column: 1 / -1; } }
 .btns .chk { padding: 0 6px; }
+.history { margin-top: 22px; padding-top: 18px; border-top: 1.5px solid var(--line-soft); }
+.history-head { display: flex; align-items: center; gap: 12px 18px; flex-wrap: wrap; }
+.history-head h3 { margin: 0 auto 0 0; font-size: 1rem; }
+.history-list { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 8px; }
+.history-list li { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1.5px solid var(--line-soft); border-radius: var(--r-xs); }
+.history-list li.empty { border-style: dashed; justify-content: flex-start; }
+.history-list .h-main { display: grid; gap: 2px; min-width: 0; }
+.history-list .h-main b { overflow-wrap: anywhere; font-size: .92rem; }
+.history-list .h-main span { font-size: .8rem; }
+.history-list .btns { flex-shrink: 0; flex-wrap: nowrap; align-items: center; }
+.history-note { font-size: .8rem; margin: 10px 0 0; }
+@media (max-width: 560px) { .history-list li { flex-direction: column; align-items: stretch; } }
 .btn-icon.del { background: none; border: 0; color: var(--muted); cursor: pointer; font-size: 1.3rem; line-height: 1; padding: 4px 8px; }
 .btn-icon.del:hover { color: var(--danger); }
 .tablewrap { margin-top: 18px; overflow: auto; }

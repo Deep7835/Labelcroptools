@@ -180,6 +180,33 @@
   };
   const mapSku = (m, sku) => (sku && m[sku]?.code) || sku;
 
+  // Processing history: the last cropped PDFs, kept in this browser's IndexedDB so they can be
+  // downloaded again. Never uploaded. Capped at HKEEP files and HDAYS days because the PDFs
+  // carry customer addresses.
+  const HKEEP = 20, HDAYS = 7;
+  let hdb;
+  const idb = (r) => new Promise((res, rej) => { r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+  const jobs = async (mode) => {
+    hdb ||= new Promise((res, rej) => { const r = indexedDB.open('skud-history', 1); r.onupgradeneeded = () => r.result.createObjectStore('jobs', { keyPath: 'id' }); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+    return (await hdb).transaction('jobs', mode).objectStore('jobs');
+  };
+  const history = {
+    keep: HKEEP, days: HDAYS,
+    get enabled() { try { return localStorage.getItem('skud.history') !== 'off'; } catch { return true; } },
+    set enabled(v) { try { if (v) localStorage.removeItem('skud.history'); else localStorage.setItem('skud.history', 'off'); } catch {} },
+    async list() {
+      const all = (await idb((await jobs('readonly')).getAll())).sort((a, b) => b.t - a.t);
+      const cut = Date.now() - HDAYS * 864e5;
+      const stale = all.filter((r, i) => r.t < cut || i >= HKEEP);
+      if (stale.length) { const st = await jobs('readwrite'); stale.forEach((r) => st.delete(r.id)); }
+      return all.filter((r) => !stale.includes(r));
+    },
+    async get(id) { return idb((await jobs('readonly')).get(id)); },
+    async add(rec) { await idb((await jobs('readwrite')).put({ ...rec, id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`, t: Date.now() })); },
+    async remove(id) { await idb((await jobs('readwrite')).delete(id)); },
+    async clear() { await idb((await jobs('readwrite')).clear()); },
+  };
+
   // Analyse one page → crop boxes + metadata.
   const analyzePage = async (doc, num, forced = 'auto') => {
     const t = await pageText(doc, num);
@@ -395,5 +422,5 @@
     container.querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); onRemove?.(+b.dataset.rm); }));
   };
 
-  Object.assign(S, { lib, loadLibs, mm2pt, pt2mm, PAPER, readFile, openPdf, renderPage, pageText, detectMarket, detectCourier, analyzePage, invoiceNameForSku, skuMap, mapSku, buildLabels, nup, renderThumbs, fileList });
+  Object.assign(S, { lib, loadLibs, mm2pt, pt2mm, PAPER, readFile, openPdf, renderPage, pageText, detectMarket, detectCourier, analyzePage, invoiceNameForSku, skuMap, mapSku, history, buildLabels, nup, renderThumbs, fileList });
 })();

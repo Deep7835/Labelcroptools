@@ -50,7 +50,7 @@
       const m = { ...(p.ref || p) }; m.sku = S.mapSku(map, m.sku);
       const stamp = o.stamp && !p.isInvoicePage ? `SKU ${S.mapSku(map, p.sku) || '—'}   QTY ${p.qty}${p.size ? '   ' + p.size : ''}${p.color ? '   ' + p.color : ''}` : null;
       const key = keyOf(m, o.sort);
-      list.push({ src: f.lib, idx: pi, box, stamp, key, seq: list.length, courier: m.courier, sku: m.sku });
+      list.push({ src: f.lib, idx: pi, box, stamp, key, seq: list.length, courier: m.courier, sku: m.sku, invoice: !!p.isInvoicePage });
       // Separate pages: the invoice cut from the same page follows its label as its own page.
       if (o.invoice === 'split' && p.invoiceBox) list.push({ src: f.lib, idx: pi, box: p.invoiceBox, stamp: null, key, seq: list.length, courier: m.courier, sku: m.sku, invoice: true });
     }));
@@ -89,12 +89,52 @@
       const bytes = await S.buildLabels(list, o);
       const base = files.length === 1 ? S.baseName(files[0].file.name) : 'labels';
       const suffix = o.layout === 'thermal' ? 'thermal' : o.layout === 'a4x4' ? 'A4-4up' : 'A4-2up';
-      S.download(new Blob([bytes], { type: 'application/pdf' }), `${base}-cropped-${suffix}${o.invoice === 'split' ? '-invoice-pages' : ''}${o.sort !== 'none' ? '-by-' + o.sort : ''}.pdf`);
+      const name = `${base}-cropped-${suffix}${o.invoice === 'split' ? '-invoice-pages' : ''}${o.sort !== 'none' ? '-by-' + o.sort : ''}.pdf`;
+      const blob = new Blob([bytes], { type: 'application/pdf' });
+      S.download(blob, name);
+      if (S.history.enabled) {
+        const labels = list.filter((e) => !e.invoice).length;
+        const summary = [{ thermal: o.size === '4x6' ? 'Thermal 4×6' : 'Thermal', a4x4: 'A4 · 4 per sheet', a4x2: 'A4 · 2 per sheet' }[o.layout], { without: 'without invoice', with: 'with invoice', split: 'invoice on separate pages' }[o.invoice], o.sort !== 'none' ? `sorted by ${o.sort === 'qty' ? 'quantity' : o.sort === 'sku' ? 'SKU' : o.sort}` : ''].filter(Boolean).join(' · ');
+        S.history.add({ name, tool: TOOL, labels, pages: list.length, summary, size: blob.size, blob }).then(renderHistory).catch(() => S.toast('Could not save to history: browser storage may be full', 'err'));
+      }
       S.status(`Done · ${list.length} pages in ${((performance.now() - t0) / 1000).toFixed(1)}s · nothing was uploaded`, 'ok');
       S.toast('Cropped PDF downloaded');
     } catch (e) { console.error(e); S.status('Failed: ' + e.message, 'err'); }
     busy = false; run.disabled = false;
   });
+
+  // ── processing history (stored in this browser by engine.js) ──────
+  const TOOL = { meesho: 'Meesho', flipkart: 'Flipkart', amazon: 'Amazon' }[market] || 'Universal';
+  const esc = (v) => String(v ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const when = (t) => new Date(t).toLocaleString('en-IN', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' });
+  async function renderHistory() {
+    const box = $('#histlist'); if (!box) return;
+    $('#histon').checked = S.history.enabled;
+    let list = []; try { list = await S.history.list(); } catch {}
+    $('#histclear').hidden = !list.length;
+    box.innerHTML = list.length
+      ? list.map((r) => `<li data-id="${esc(r.id)}"><div class="h-main"><b>${esc(r.name)}</b><span class="muted">${when(r.t)} · ${esc(r.tool)} · ${r.labels} label${r.labels === 1 ? '' : 's'} · ${esc(r.summary)} · ${S.fmtBytes(r.size)}</span></div><div class="btns"><button class="btn btn-sm" type="button" data-act="dl">Download</button><button class="btn-icon del" type="button" data-act="rm" aria-label="Delete ${esc(r.name)}" title="Delete">×</button></div></li>`).join('')
+      : `<li class="muted empty">${S.history.enabled ? 'No processing history yet. Files you crop here appear in this list, so you can download them again without re-cropping.' : 'History is off. Switch on “Keep on this device” to keep your cropped files here.'}</li>`;
+  }
+  $('#histlist')?.addEventListener('click', async (e) => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const id = b.closest('li').dataset.id;
+    try {
+      if (b.dataset.act === 'dl') { const r = await S.history.get(id); if (r) S.download(r.blob, r.name); else S.toast('That file has expired', 'err'); }
+      else { await S.history.remove(id); }
+    } catch { S.toast('History is not available in this browser', 'err'); }
+    renderHistory();
+  });
+  $('#histclear')?.addEventListener('click', async () => {
+    if (!confirm('Delete every cropped file saved in this browser’s processing history?')) return;
+    try { await S.history.clear(); } catch {} renderHistory();
+  });
+  $('#histon')?.addEventListener('change', async (e) => {
+    if (e.target.checked) { S.history.enabled = true; return renderHistory(); }
+    if (!confirm('Stop keeping history and delete the cropped files saved in this browser?')) { e.target.checked = true; return; }
+    S.history.enabled = false; try { await S.history.clear(); } catch {} renderHistory();
+  });
+  renderHistory();
 
   // Accept a file handed over from the home page smart drop zone.
   addEventListener('load', async () => {

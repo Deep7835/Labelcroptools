@@ -717,9 +717,11 @@ const pages = [
 <h2>The short version</h2>
 <p>Your files never leave your device. We do not have a server that receives PDFs, images, invoice details or calculator inputs. There is nothing for us to store, sell or leak.</p>
 <h2>Files you open in a tool</h2>
-<p>PDFs and images are read into your browser’s memory, processed there, and offered back to you as a download. They are not transmitted anywhere. Closing the tab discards them.</p>
+<p>PDFs and images are read into your browser’s memory, processed there, and offered back to you as a download. They are not transmitted anywhere. Closing the tab discards them, with one exception you control, described next.</p>
+<h2>Processing history</h2>
+<p>The label croppers keep your last 20 cropped PDFs for 7 days in your browser’s own storage (IndexedDB), so you can download one again without re-cropping. These files include the customer names and addresses printed on the labels. They are stored only on the device you used, are never uploaded, and we cannot see them. Older files are deleted automatically. Untick “Keep on this device” under any label cropper to stop saving them and delete what is stored, or use the Clear button. On a shared computer, we recommend clearing history when you finish.</p>
 <h2>Data saved in your browser</h2>
-<p>Some tools remember your preferences (for example the last output layout you picked, or your seller details in the GST Invoice Generator) using your browser’s localStorage. This data stays on your device and can be cleared through your browser’s “clear site data” option.</p>
+<p>Some tools remember your preferences (for example the last output layout you picked, or your seller details in the GST Invoice Generator) using your browser’s localStorage. SKU Mapping stores the SKU codes and product names you enter the same way. This data stays on your device and can be cleared through your browser’s “clear site data” option.</p>
 <h2>Analytics</h2>
 ${analyticsPrivacyCopy()}
 <h2>Cookies</h2>
@@ -1013,7 +1015,7 @@ ${site.name} is a set of ${tools.length} free web tools for Indian e-commerce se
 
 ## Key facts
 - Price: free, with no account, no daily limit and no watermark.
-- Privacy: files are processed locally in the browser and never sent to a server. Customer names and addresses on labels are not stored.
+- Privacy: files are processed locally in the browser and never sent to a server. The label croppers keep the last 20 cropped PDFs for 7 days in the visitor's own browser (processing history) so they can be downloaded again; this can be switched off or cleared at any time.
 - Label croppers: Meesho, Flipkart and Amazon.in (Easy Ship and Self Ship), plus a universal cropper that detects the marketplace per page. Other marketplaces can be cropped manually with PDF Crop.
 - Label output: one label per page for 4x6 inch thermal printers, or 2 or 4 labels per A4 sheet. The tax invoice can be dropped, kept on the same page as the label, or printed on its own page right after each label.
 - Sorting: labels can be sorted by SKU, courier partner (Valmo, Delhivery, Xpressbees, Shadowfax, Ekart and others) or quantity, and stamped with the SKU and quantity in large text.
