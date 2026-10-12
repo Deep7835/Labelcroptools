@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { execSync } from 'node:child_process';
 import { site, categories, brands, brandRotateMs, analytics, consentRequiredFor, edgeAnalytics, indexNow } from './src/site.config.mjs';
 import { tools } from './src/tools.mjs';
 import { sprite, icon } from './src/icons.mjs';
@@ -105,7 +106,7 @@ const toolLd = (t) => ({
   featureList: t.features.map((f) => f.title).join(', '),
   keywords: t.keywords.join(', '),
   inLanguage: site.lang,
-  dateModified: t.updated,
+  dateModified: toolUpdated(t),
   author: { '@type': 'Organization', name: site.name, url: site.url + '/' },
   image: abs(`/og/${t.slug}.png`),
 });
@@ -235,6 +236,42 @@ const cspDirectives = [
 ];
 const csp = cspDirectives.join('; ');
 const cspHeader = [...cspDirectives, "frame-ancestors 'self'"].join('; ');
+
+// ── freshness ────────────────────────────────────────────────────────────
+// `updated` is hand-written in each post and tool, and it drifts: content gets
+// rewritten and the date gets forgotten. That is not cosmetic. IndexNow then tells
+// engines a URL changed while the sitemap's lastmod still says it did not, and the
+// contradiction slows the recrawl of exactly the pages that were just improved.
+// Git already knows when a source file last changed, so derive the date from it and
+// fall back to the declared value only when git is unavailable.
+const postFiles = new Map(fs.readdirSync(path.join(ROOT, 'src', 'posts'))
+  .filter((f) => f.endsWith('.mjs') && f !== 'index.mjs')
+  .map((f) => {
+    const src = fs.readFileSync(path.join(ROOT, 'src', 'posts', f), 'utf8');
+    const m = src.match(/slug:\s*'([^']+)'/);
+    return [m ? m[1] : f, f];
+  }));
+const gitDates = (() => {
+  try {
+    const out = execSync('git log --name-only --pretty=format:%cI --diff-filter=ACMR -- src/', { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    const map = new Map();
+    let date = null;
+    for (const line of out.split('\n')) {
+      if (/^\d{4}-\d{2}-\d{2}T/.test(line)) date = line.slice(0, 10);
+      else if (line.trim() && date && !map.has(line.trim())) map.set(line.trim(), date);
+    }
+    return map;
+  } catch { return new Map(); }
+})();
+const freshest = (file, declared) => {
+  const g = gitDates.get(file);
+  return g && g > declared ? g : declared;
+};
+const postUpdated = (p) => freshest(`src/posts/${postFiles.get(p.slug) || ''}`, p.updated);
+const toolUpdated = (t) => freshest('src/tools.mjs', t.updated);
+// The homepage, category hubs and static pages are generated from the whole of src/,
+// so their freshness is the newest change anywhere in it.
+const siteUpdated = [...gitDates.values(), site.updated].sort().pop();
 
 // ── layout ───────────────────────────────────────────────────────────────
 const head = ({ title, description, url, ogImage, extraLd = [], noindex = false, preload = '' }) => `<!doctype html>
@@ -493,7 +530,7 @@ const toolPage = (t) => {
       <h2>Related tools</h2>
       <div class="tool-grid">${related.map(toolCard).join('')}</div>
     </section>
-    <p class="updated muted">Last updated ${t.updated}. ${esc(site.name)} is an independent tool site and is not affiliated with Meesho, Flipkart or Amazon.</p>
+    <p class="updated muted">Last updated ${toolUpdated(t)}. ${esc(site.name)} is an independent tool site and is not affiliated with Meesho, Flipkart or Amazon.</p>
   </article>
   <aside class="tool-aside" aria-label="On this page">
     <p class="toc-label">On this page</p>
@@ -752,7 +789,7 @@ const postCard = (p) => `<a class="post-card" href="${postUrl(p)}">
 const blogLd = (p) => ({
   '@context': 'https://schema.org', '@type': 'BlogPosting',
   headline: p.title, description: p.description,
-  datePublished: p.published, dateModified: p.updated,
+  datePublished: p.published, dateModified: postUpdated(p),
   author: { '@type': 'Organization', name: blog.author.name, url: site.url + '/' },
   publisher: { '@type': 'Organization', name: site.name, logo: { '@type': 'ImageObject', url: abs('/icon-512.png') } },
   mainEntityOfPage: { '@type': 'WebPage', '@id': abs(postUrl(p)) },
@@ -948,13 +985,13 @@ write('404.html', page({ title: `Page not found – ${site.name}`, description: 
 write('search-index.json', JSON.stringify(tools.map((t) => ({ n: t.name, s: t.slug, c: catOf(t.category).short, k: t.keywords.join(' '), d: t.short }))));
 
 const urls = [
-  { loc: '/', pri: '1.0', lastmod: site.updated, freq: 'weekly' },
-  ...categories.map((c) => ({ loc: `/${c.slug}/`, pri: '0.8', lastmod: site.updated, freq: 'weekly' })),
-  ...tools.map((t) => ({ loc: `/${t.slug}/`, pri: '0.9', lastmod: t.updated, freq: 'monthly' })),
-  ...pages.map((p) => ({ loc: `/${p.slug}/`, pri: '0.3', lastmod: site.updated, freq: 'yearly' })),
+  { loc: '/', pri: '1.0', lastmod: siteUpdated, freq: 'weekly' },
+  ...categories.map((c) => ({ loc: `/${c.slug}/`, pri: '0.8', lastmod: siteUpdated, freq: 'weekly' })),
+  ...tools.map((t) => ({ loc: `/${t.slug}/`, pri: '0.9', lastmod: toolUpdated(t), freq: 'monthly' })),
+  ...pages.map((p) => ({ loc: `/${p.slug}/`, pri: '0.3', lastmod: siteUpdated, freq: 'yearly' })),
   { loc: `${blog.base}/`, pri: '0.7', lastmod: posts[0]?.updated || site.updated, freq: 'weekly' },
   ...marketplaces.map((m) => ({ loc: `${blog.base}/${m.slug}/`, pri: '0.6', lastmod: postsOf(m.slug)[0]?.updated || site.updated, freq: 'weekly' })),
-  ...posts.map((p) => ({ loc: postUrl(p), pri: '0.7', lastmod: p.updated, freq: 'monthly' })),
+  ...posts.map((p) => ({ loc: postUrl(p), pri: '0.7', lastmod: postUpdated(p), freq: 'monthly' })),
 ];
 write('sitemap.xml', `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
