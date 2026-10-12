@@ -42,9 +42,10 @@ import toolsThankYou from './thank-you-cards-online-orders.mjs';
 import toolsTaxInvoice from './what-a-tax-invoice-must-contain.mjs';
 import toolsWhiteBg from './white-background-product-photos.mjs';
 import toolsBulkBarcode from './print-sku-barcodes-in-bulk.mjs';
+import toolsOtherMarketplaces from './crop-labels-other-marketplaces.mjs';
 
 export const posts = [
-  toolsMeeshoSort, toolsFlipkartInvoice, toolsAmazonSmall, toolsMargins, toolsMergeLocal, toolsSplit, toolsSideways, toolsPhotosPdf, toolsExportImages, toolsPrintTips, toolsPickPack, toolsProfit, toolsVolumetric, toolsBarcode, toolsUpiQr, toolsThankYou, toolsTaxInvoice, toolsWhiteBg, toolsBulkBarcode,
+  toolsMeeshoSort, toolsFlipkartInvoice, toolsAmazonSmall, toolsMargins, toolsMergeLocal, toolsSplit, toolsSideways, toolsPhotosPdf, toolsExportImages, toolsPrintTips, toolsPickPack, toolsProfit, toolsVolumetric, toolsBarcode, toolsUpiQr, toolsThankYou, toolsTaxInvoice, toolsWhiteBg, toolsBulkBarcode, toolsOtherMarketplaces,
   toolsFourUp, toolsImageSize, toolsGstPrice,
   meeshoLabels, meeshoRto, meeshoPayments, meeshoImages, meeshoPacking, meeshoCourierSort,
   flipkartPrinting, flipkartSku, flipkartWeight, flipkartImages, flipkartDispatch, flipkartSettlement,

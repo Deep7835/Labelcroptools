@@ -592,6 +592,27 @@ def m_barcode_sheet(d):
             barcode(d, x + 12, y + 12, 92, 32, ACCENT if (r + c) % 4 else INK, r * 3 + c)
 
 
+
+def m_many_sources(d):
+    """Pages of different shapes from several platforms, cropped into one even stack."""
+    shapes = [(150, 100, 150, 200), (330, 120, 120, 170), (160, 330, 130, 150), (320, 320, 150, 210), (160, 510, 150, 150), (340, 560, 120, 110)]
+    for i, (x, y, w, h) in enumerate(shapes):
+        page(d, x, y, w, h, outline=MUTED, width=3, r=10)
+        rr(d, [x + 12, y + 12, x + w - 12, y + h * 0.45], 6, fill=ACCENT_SOFT if i % 2 else TINT)
+        barcode(d, x + 18, y + 24, w - 40, int(h * 0.2), INK, 7 + i)
+        lines(d, x + 14, y + h * 0.55, w - 30, 3, 14, MUTED, 5, .2)
+    for y in (200, 375, 560):
+        d.line([500, y, 640, 375], fill=MUTED, width=4)
+    d.line([640, 375, 700, 375], fill=ACCENT, width=6)
+    d.polygon([(700, 356), (740, 375), (700, 394)], fill=ACCENT)
+    for j in range(4):
+        x, y = 790 + j * 14, 150 + j * 14
+        rr(d, [x, y, x + 240, y + 360], 14, fill=CARD, outline=ACCENT if j == 3 else MUTED, width=4)
+    rr(d, [854, 220, 1052, 330], 8, fill=ACCENT_SOFT)
+    barcode(d, 870, 236, 166, 70, ACCENT, 31)
+    lines(d, 854, 360, 190, 4, 26, MUTED, 8, .14)
+
+
 MOTIFS = {
     'label-crop': m_label_crop, 'return': m_return, 'statement': m_statement, 'photo': m_photo,
     'checklist': m_checklist, 'compare': m_compare, 'barcode': m_barcode, 'box': m_box,
@@ -606,6 +627,7 @@ MOTIFS = {
     'invoice-fields': m_invoice_fields, 'sweep': m_sweep, 'nup-grid': m_nup_grid,
     'compress': m_compress, 'tax-split': m_tax_split,
     'settlement': m_settlement, 'courier-groups': m_courier_groups, 'barcode-sheet': m_barcode_sheet,
+    'many-sources': m_many_sources,
 }
 
 
