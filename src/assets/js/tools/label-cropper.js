@@ -48,7 +48,10 @@
       const box = o.invoice === 'with' ? p.fullBox : (p.labelBox || p.fullBox);
       const m = p.ref || p;
       const stamp = o.stamp && !p.isInvoicePage ? `SKU ${p.sku || '—'}   QTY ${p.qty}${p.size ? '   ' + p.size : ''}${p.color ? '   ' + p.color : ''}` : null;
-      list.push({ src: f.lib, idx: pi, box, stamp, key: keyOf(m, o.sort), seq: list.length, courier: m.courier, sku: m.sku });
+      const key = keyOf(m, o.sort);
+      list.push({ src: f.lib, idx: pi, box, stamp, key, seq: list.length, courier: m.courier, sku: m.sku });
+      // Separate pages: the invoice cut from the same page follows its label as its own page.
+      if (o.invoice === 'split' && p.invoiceBox) list.push({ src: f.lib, idx: pi, box: p.invoiceBox, stamp: null, key, seq: list.length, courier: m.courier, sku: m.sku, invoice: true });
     }));
     if (o.sort !== 'none') list.sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : a.seq - b.seq));
     return list;
@@ -69,7 +72,7 @@
     try {
       const bytes = await S.buildLabels(list, o, { limit: o.layout === 'thermal' ? 8 : 8 });
       preview.hidden = false;
-      const caps = o.layout === 'thermal' ? list.slice(0, 8).map((e) => e.sku ? `${e.sku} · ${e.courier}` : e.courier) : [];
+      const caps = o.layout === 'thermal' ? list.slice(0, 8).map((e) => e.invoice ? 'Invoice' : e.sku ? `${e.sku} · ${e.courier}` : e.courier) : [];
       await S.renderThumbs(bytes, thumbs, { count: 8, width: 180, captions: caps });
     } catch (e) { console.error(e); }
   }
@@ -84,8 +87,8 @@
       const bytes = await S.buildLabels(list, o);
       const base = files.length === 1 ? S.baseName(files[0].file.name) : 'labels';
       const suffix = o.layout === 'thermal' ? 'thermal' : o.layout === 'a4x4' ? 'A4-4up' : 'A4-2up';
-      S.download(new Blob([bytes], { type: 'application/pdf' }), `${base}-cropped-${suffix}${o.sort !== 'none' ? '-by-' + o.sort : ''}.pdf`);
-      S.status(`Done · ${list.length} labels in ${((performance.now() - t0) / 1000).toFixed(1)}s · nothing was uploaded`, 'ok');
+      S.download(new Blob([bytes], { type: 'application/pdf' }), `${base}-cropped-${suffix}${o.invoice === 'split' ? '-invoice-pages' : ''}${o.sort !== 'none' ? '-by-' + o.sort : ''}.pdf`);
+      S.status(`Done · ${list.length} pages in ${((performance.now() - t0) / 1000).toFixed(1)}s · nothing was uploaded`, 'ok');
       S.toast('Cropped PDF downloaded');
     } catch (e) { console.error(e); S.status('Failed: ' + e.message, 'err'); }
     busy = false; run.disabled = false;

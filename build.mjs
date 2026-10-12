@@ -1015,7 +1015,7 @@ ${site.name} is a set of ${tools.length} free web tools for Indian e-commerce se
 - Price: free, with no account, no daily limit and no watermark.
 - Privacy: files are processed locally in the browser and never sent to a server. Customer names and addresses on labels are not stored.
 - Label croppers: Meesho, Flipkart and Amazon.in (Easy Ship and Self Ship), plus a universal cropper that detects the marketplace per page. Other marketplaces can be cropped manually with PDF Crop.
-- Label output: one label per page for 4x6 inch thermal printers, or 2 or 4 labels per A4 sheet, with or without the tax invoice.
+- Label output: one label per page for 4x6 inch thermal printers, or 2 or 4 labels per A4 sheet. The tax invoice can be dropped, kept on the same page as the label, or printed on its own page right after each label.
 - Sorting: labels can be sorted by SKU, courier partner (Valmo, Delhivery, Xpressbees, Shadowfax, Ekart and others) or quantity, and stamped with the SKU and quantity in large text.
 - Picklist: reads SKU, product name, size, colour, quantity and courier from label PDFs into one table, exportable to CSV.
 - Audience: small and mid-size online sellers in India; prices and examples are in rupees.

@@ -185,6 +185,8 @@
       if (!b || above.length < 6 || (b.y1 - b.y0) < 40 || !labelMarkers) isInvoicePage = true;
       else { labelBox = clamp({ x0: b.x0, x1: b.x1, y0: invLine.top, y1: b.y1 }); labelBox.y0 = Math.max(vy0, invLine.top + 1.5); }
     }
+    // The invoice part of a label page (Meesho, Flipkart): everything below the label's cut line.
+    const invoiceBox = labelBox && labelBox.y0 - fullBox.y0 > 40 ? { x0: fullBox.x0, x1: fullBox.x1, y0: fullBox.y0, y1: labelBox.y0 } : null;
     if (!labelBox && !isInvoicePage) labelBox = fullBox;
     const region = labelBox || fullBox;
     const rows = extractTable(t.lines, { y0: region.y0, y1: region.y1 });
@@ -197,7 +199,7 @@
     }
     const labelText = t.lines.filter((l) => l.y >= region.y0).map((l) => l.text).join('\n');
     const orderNo = (labelText.match(/order\s*(?:no\.?|id|number)?\s*[:#]?\s*([0-9][0-9_\-]{6,})/i) || [])[1] || (rows[0] && rows[0].order) || '';
-    return { num, market, isInvoicePage, labelBox, fullBox, rows, sku: rows[0]?.sku || '', qty: parseInt(rows[0]?.qty || '1', 10) || 1, size: rows[0]?.size || '', color: rows[0]?.color || '', desc: rows[0]?.desc || '', courier: detectCourier(labelText), orderNo, rotate: t.rotate, invoiceLines: isInvoicePage ? t.lines : null };
+    return { num, market, isInvoicePage, labelBox, fullBox, invoiceBox, rows, sku: rows[0]?.sku || '', qty: parseInt(rows[0]?.qty || '1', 10) || 1, size: rows[0]?.size || '', color: rows[0]?.color || '', desc: rows[0]?.desc || '', courier: detectCourier(labelText), orderNo, rotate: t.rotate, invoiceLines: isInvoicePage ? t.lines : null };
   };
 
   // ── pdf-lib builders ─────────────────────────────────────────────────

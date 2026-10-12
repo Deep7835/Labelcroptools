@@ -77,8 +77,9 @@ const labelPanel = (market) => `
 <div class="tool-ui" data-tool="label-cropper" data-market="${market}">
   ${dropzone({ multiple: true, title: 'Drop your label PDF here', sub: 'Multiple files allowed · they are merged in order · nothing is uploaded' })}
   <div class="opts">
-    ${radios('invoice', 'Invoice', [{ v: 'without', l: 'Without invoice' }, { v: 'with', l: market === 'meesho' || market === 'flipkart' ? 'With invoice (one page)' : 'With invoice' }])}
+    ${radios('invoice', 'Invoice', [{ v: 'without', l: 'Without invoice' }, { v: 'with', l: market === 'meesho' || market === 'flipkart' ? 'With invoice (one page)' : 'With invoice' }, ...(market === 'amazon' ? [] : [{ v: 'split', l: 'Label & invoice on separate pages' }])])}
     <p class="opt-hint" data-show="invoice=with">${invoiceHint[market]}</p>
+    <p class="opt-hint" data-show="invoice=split">Each label is cut from its invoice and gets its own page, with that order’s invoice on the page right after it. Labels print at full size and the invoice is still there to pack.</p>
     ${radios('layout', 'Output layout', [{ v: 'thermal', l: 'Label printer (1 per page)' }, { v: 'a4x4', l: 'A4 · 4 per sheet' }, { v: 'a4x2', l: 'A4 · 2 per sheet' }])}
     ${radios('size', 'Label page size', [{ v: 'auto', l: 'Auto (cropped size)' }, { v: '4x6', l: 'Fit to 4 × 6 in' }], 0, 'data-show="layout=thermal"')}
     ${radios('sort', 'Sort labels by', [{ v: 'none', l: 'Original order' }, { v: 'sku', l: 'SKU' }, { v: 'courier', l: 'Courier partner' }, { v: 'qty', l: 'Qty (multi-qty first)' }])}
@@ -161,6 +162,10 @@ export const tools = [
         a: 'Yes. Choose “With invoice (one page)” and each order’s label and tax invoice stay together on a single page, with the empty space trimmed. It works on 4 × 6 thermal rolls and on A4 sheets, and suits sellers who keep the invoice inside the parcel.',
       },
       {
+        q: 'Can I print the Meesho label and invoice on separate pages?',
+        a: 'Yes. Choose “Label & invoice on separate pages”. Each label is cut from its invoice and printed at full size on its own page, and that order’s invoice follows on the next page, so the pair stays together even after sorting by SKU or courier.',
+      },
+      {
         q: 'Which couriers does the sort-by-courier option recognise?',
         a: 'Valmo, Delhivery, Xpressbees, Ekart, Shadowfax, Ecom Express, Amazon Shipping, Blue Dart, DTDC and Shiprocket. Labels from an unrecognised courier are grouped under “Other” at the end.',
       },
@@ -240,6 +245,10 @@ export const tools = [
       {
         q: 'Can I keep the Flipkart invoice with the label?',
         a: 'Yes. Choose “With invoice (one page)” and the label and invoice stay together on a single page while the blank margin at the bottom is trimmed. Invoice-only pages are kept in that mode and dropped in “Without invoice” mode.',
+      },
+      {
+        q: 'Can I print the Flipkart label and invoice on separate pages?',
+        a: 'Yes. Choose “Label & invoice on separate pages”. The label gets its own full-size page and the invoice cut from the same page follows right after it, which suits sellers who print labels on a thermal roll and still pack the invoice.',
       },
       {
         q: 'Why does the tool detect text instead of using fixed crop sizes?',
